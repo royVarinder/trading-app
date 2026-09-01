@@ -1,5 +1,9 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { InfoCard } from "@/components/dashboard/shared/InfoCard";
 import { TradingViewWidget } from "@/components/dashboard/shared/TradingViewWidget";
+import type { TeamSummary } from "@/lib/team-types";
 import {
   TreeIcon,
   LayersIcon,
@@ -33,7 +37,34 @@ const TICKER_SYMBOLS = [
   { proName: "BITSTAMP:ETHUSD", title: "Ethereum" },
 ];
 
+const EMPTY_SUMMARY: TeamSummary = {
+  totalDirect: 0,
+  activeDirect: 0,
+  pendingDirect: 0,
+  totalTeam: 0,
+  activeTeam: 0,
+  pendingTeam: 0,
+};
+
 export function DashboardView({ memberId }: { memberId: string }) {
+  const [summary, setSummary] = useState<TeamSummary>(EMPTY_SUMMARY);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch("/api/team")
+      .then((res) => res.json())
+      .then((data) => {
+        if (cancelled || data.error) return;
+        setSummary(data.summary ?? EMPTY_SUMMARY);
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <div className="space-y-6">
       <div>
@@ -81,12 +112,12 @@ export function DashboardView({ memberId }: { memberId: string }) {
           title="Team Information"
           rows={[
             { label: "User ID", value: memberId },
-            { label: "Total Direct", value: "1" },
-            { label: "Active Direct", value: "0" },
-            { label: "Pending Direct", value: "1" },
-            { label: "Total Team", value: "1" },
-            { label: "Active Team", value: "0" },
-            { label: "Pending Team", value: "1" },
+            { label: "Total Direct", value: summary.totalDirect },
+            { label: "Active Direct", value: summary.activeDirect },
+            { label: "Pending Direct", value: summary.pendingDirect },
+            { label: "Total Team", value: summary.totalTeam },
+            { label: "Active Team", value: summary.activeTeam },
+            { label: "Pending Team", value: summary.pendingTeam },
           ]}
         />
       </div>
