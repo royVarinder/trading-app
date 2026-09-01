@@ -38,6 +38,7 @@ export async function getDb(): Promise<Db> {
           { key: { mobile: 1 }, unique: true },
           { key: { memberId: 1 }, unique: true },
         ]),
+      db.collection("users").createIndex({ sponsorId: 1 }),
       db.collection("deposits").createIndex({ memberId: 1, createdAt: -1 }),
       db.collection("tickets").createIndex({ memberId: 1, createdAt: -1 }),
       db.collection("withdrawals").createIndex({ memberId: 1, type: 1, createdAt: -1 }),
