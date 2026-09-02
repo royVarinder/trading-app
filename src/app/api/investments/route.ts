@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/lib/mongodb";
 import { getSession } from "@/lib/session";
 import { getAvailableFund } from "@/lib/fund";
-import { STARTUP_PLAN } from "@/lib/plans";
+import { getSettings } from "@/lib/settings";
 
 export async function GET() {
   const session = await getSession();
@@ -41,10 +41,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
+  const { startupPlan } = await getSettings();
+
   const amount = Number(body.amount);
-  if (!Number.isFinite(amount) || amount < STARTUP_PLAN.min) {
+  if (!Number.isFinite(amount) || amount < startupPlan.min) {
     return NextResponse.json(
-      { error: `Minimum investment package is $${STARTUP_PLAN.min}.` },
+      { error: `Minimum investment package is $${startupPlan.min}.` },
       { status: 400 }
     );
   }
@@ -62,7 +64,7 @@ export async function POST(req: Request) {
     memberId: session.memberId,
     username: session.username,
     amount,
-    dailyRate: STARTUP_PLAN.dailyRate,
+    dailyRate: startupPlan.dailyRate,
     status: "Active" as const,
     createdAt: new Date(),
   };

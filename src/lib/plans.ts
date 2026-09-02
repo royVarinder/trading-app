@@ -47,13 +47,16 @@ export const LEADERSHIP_RANKS: LeadershipRank[] = [
   { level: 6, rank: "Crown Ambassador", commissionPct: 120, selfInvestment: 25000, directBusiness: 50000, teamBusiness: 10000000, monthlyReward: 30000 },
 ];
 
-export function rankForTotals(totals: {
-  selfInvestment: number;
-  directBusiness: number;
-  teamBusiness: number;
-}): LeadershipRank | null {
+export function rankForTotals(
+  totals: {
+    selfInvestment: number;
+    directBusiness: number;
+    teamBusiness: number;
+  },
+  ranks: LeadershipRank[] = LEADERSHIP_RANKS
+): LeadershipRank | null {
   let best: LeadershipRank | null = null;
-  for (const rank of LEADERSHIP_RANKS) {
+  for (const rank of ranks) {
     if (
       totals.selfInvestment >= rank.selfInvestment &&
       totals.directBusiness >= rank.directBusiness &&

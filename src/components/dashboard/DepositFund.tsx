@@ -1,20 +1,34 @@
 "use client";
 
 import Image from "next/image";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { PageHeader } from "@/components/dashboard/shared/PageHeader";
 
-const WALLET_ADDRESS = "0xDEM0A11cCB185545aC41CA8C2772DB579946F6";
+const FALLBACK_WALLET_ADDRESS = "0xDEM0A11cCB185545aC41CA8C2772DB579946F6";
 
 export function DepositFund() {
+  const [walletAddress, setWalletAddress] = useState(FALLBACK_WALLET_ADDRESS);
   const [copied, setCopied] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/settings/public")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled && data.depositWalletAddress) setWalletAddress(data.depositWalletAddress);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   async function copyAddress() {
     try {
-      await navigator.clipboard.writeText(WALLET_ADDRESS);
+      await navigator.clipboard.writeText(walletAddress);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -78,7 +92,7 @@ export function DepositFund() {
           className="mt-2 w-full truncate rounded-xl bg-gray-50 px-3 py-2.5 text-center font-mono text-xs text-gray-600 transition hover:bg-gray-100"
           title="Click to copy"
         >
-          {copied ? "Copied to clipboard!" : WALLET_ADDRESS}
+          {copied ? "Copied to clipboard!" : walletAddress}
         </button>
       </div>
 

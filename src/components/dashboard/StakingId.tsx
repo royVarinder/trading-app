@@ -2,10 +2,11 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { PageHeader } from "@/components/dashboard/shared/PageHeader";
-import { STAKING_TIERS } from "@/lib/plans";
+import { STAKING_TIERS as FALLBACK_STAKING_TIERS, type StakingTier } from "@/lib/plans";
 
 export function StakingId({ memberId }: { memberId: string }) {
   const [availableFund, setAvailableFund] = useState<number | null>(null);
+  const [tiers, setTiers] = useState<StakingTier[]>(FALLBACK_STAKING_TIERS);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -18,6 +19,13 @@ export function StakingId({ memberId }: { memberId: string }) {
       .then((data) => {
         if (cancelled) return;
         if (!data.error) setAvailableFund(data.availableFund ?? 0);
+      })
+      .catch(() => {});
+
+    fetch("/api/settings/public")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled && Array.isArray(data.stakingTiers)) setTiers(data.stakingTiers);
       })
       .catch(() => {});
 
@@ -90,7 +98,7 @@ export function StakingId({ memberId }: { memberId: string }) {
               <option value="" disabled>
                 Select Plan
               </option>
-              {STAKING_TIERS.map((tier) => (
+              {tiers.map((tier) => (
                 <option key={tier.id} value={tier.id}>
                   {tier.label} — {(tier.dailyRate * 100).toFixed(1)}%/day, {tier.durationDays} days
                 </option>

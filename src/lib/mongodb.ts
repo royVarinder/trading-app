@@ -50,6 +50,15 @@ export async function getDb(): Promise<Db> {
       db.collection("bonusLedger").createIndex({ positionId: 1, date: 1 }, { unique: true }),
       db.collection("leadershipLedger").createIndex({ beneficiaryMemberId: 1, date: -1 }),
       db.collection("rewardLedger").createIndex({ memberId: 1, month: 1 }, { unique: true }),
+      db
+        .collection("admins")
+        .createIndexes([
+          { key: { username: 1 }, unique: true },
+          { key: { email: 1 }, unique: true },
+        ]),
+      db.collection("adminActions").createIndex({ createdAt: -1 }),
+      db.collection("adjustments").createIndex({ memberId: 1, createdAt: -1 }),
+      db.collection("tickets").createIndex({ status: 1, createdAt: -1 }),
     ]).catch(() => {
       indexesEnsured = false;
     });

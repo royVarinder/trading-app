@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
-import { LEADERSHIP_RANKS } from "@/lib/plans";
 import { computeRank } from "@/lib/accrual";
+import { getSettings } from "@/lib/settings";
 
 export async function GET() {
   const session = await getSession();
@@ -9,11 +9,14 @@ export async function GET() {
     return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
   }
 
-  const currentRank = await computeRank(session.memberId);
+  const [currentRank, { leadershipRanks }] = await Promise.all([
+    computeRank(session.memberId),
+    getSettings(),
+  ]);
   const currentLevel = currentRank?.level ?? 0;
 
   return NextResponse.json({
-    ranks: LEADERSHIP_RANKS.map((r) => ({
+    ranks: leadershipRanks.map((r) => ({
       level: r.level,
       rank: r.rank,
       commissionPct: r.commissionPct,

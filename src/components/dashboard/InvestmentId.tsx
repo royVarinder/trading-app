@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/dashboard/shared/PageHeader";
 
 export function InvestmentId({ memberId }: { memberId: string }) {
   const [availableFund, setAvailableFund] = useState<number | null>(null);
+  const [minPackage, setMinPackage] = useState(50);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -17,6 +18,13 @@ export function InvestmentId({ memberId }: { memberId: string }) {
       .then((data) => {
         if (cancelled) return;
         if (!data.error) setAvailableFund(data.availableFund ?? 0);
+      })
+      .catch(() => {});
+
+    fetch("/api/settings/public")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled && data.startupPlan?.min) setMinPackage(data.startupPlan.min);
       })
       .catch(() => {});
 
@@ -87,9 +95,9 @@ export function InvestmentId({ memberId }: { memberId: string }) {
               id="investmentPackage"
               name="investmentPackage"
               type="number"
-              min={50}
+              min={minPackage}
               step="1"
-              placeholder="Min Package $50"
+              placeholder={`Min Package $${minPackage}`}
               className="field-input"
               required
             />

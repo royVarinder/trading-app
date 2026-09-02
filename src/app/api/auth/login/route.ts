@@ -34,6 +34,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid member ID or password." }, { status: 401 });
   }
 
+  // Absent status = active (pre-existing accounts never had this field).
+  // Only an explicit admin suspension blocks login.
+  if (user.status === "suspended") {
+    return NextResponse.json(
+      { error: "This account has been suspended. Contact support for assistance." },
+      { status: 403 }
+    );
+  }
+
   await setSessionCookie({
     userId: user._id.toString(),
     memberId: user.memberId,
