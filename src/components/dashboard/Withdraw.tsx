@@ -1,16 +1,37 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { PageHeader } from "@/components/dashboard/shared/PageHeader";
 import { InfoCard } from "@/components/dashboard/shared/InfoCard";
 
-const NET_INCOME = 6.75;
 const MIN_WITHDRAWAL = 10;
 
+type WalletSummary = {
+  totalIncome: number;
+  totalIncomeWithdrawal: number;
+  netIncome: number;
+};
+
+const EMPTY_WALLET: WalletSummary = { totalIncome: 0, totalIncomeWithdrawal: 0, netIncome: 0 };
+
 export function Withdraw() {
+  const [wallet, setWallet] = useState<WalletSummary>(EMPTY_WALLET);
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  function loadWallet() {
+    fetch("/api/wallet")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.error) setWallet(data);
+      })
+      .catch(() => {});
+  }
+
+  useEffect(() => {
+    loadWallet();
+  }, []);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -23,7 +44,7 @@ export function Withdraw() {
       setError(`Minimum withdrawal is $${MIN_WITHDRAWAL}.`);
       return;
     }
-    if (amount > NET_INCOME) {
+    if (amount > wallet.netIncome) {
       setError("Amount exceeds your available net income.");
       return;
     }
@@ -44,6 +65,7 @@ export function Withdraw() {
 
       setSubmitted(true);
       form.reset();
+      loadWallet();
       setTimeout(() => setSubmitted(false), 3000);
     } catch {
       setError("Something went wrong. Please try again.");
@@ -59,11 +81,15 @@ export function Withdraw() {
       <div className="max-w-md">
         <InfoCard
           rows={[
-            { label: "Total Income", value: "$6.75" },
-            { label: "Total Withdrawal", value: "$0" },
-            { label: "Net Income", value: `$${NET_INCOME.toFixed(2)}`, valueClassName: "text-emerald-600" },
+            { label: "Total Income", value: `$${wallet.totalIncome.toFixed(2)}` },
+            { label: "Total Withdrawal", value: `$${wallet.totalIncomeWithdrawal.toFixed(2)}` },
+            { label: "Net Income", value: `$${wallet.netIncome.toFixed(2)}`, valueClassName: "text-emerald-600" },
           ]}
-          footer={<p className="text-xs text-gray-400">Minimum withdrawal ${MIN_WITHDRAWAL}</p>}
+          footer={
+            <p className="text-xs text-gray-400">
+              Minimum withdrawal ${MIN_WITHDRAWAL}, 5% admin charge applies
+            </p>
+          }
         />
       </div>
 

@@ -76,7 +76,7 @@ export default function SignupPage() {
 
   return (
     <AuthShell
-      title="Welcome to Win FX"
+      title="Welcome to PRIMEFX"
       subtitle="To keep connected with us please sign up with your personal information by email address and password."
       footer={
         <span>

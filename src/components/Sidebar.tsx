@@ -45,8 +45,8 @@ export function Sidebar({
     <aside className="mesh-bg flex h-full w-72 shrink-0 flex-col justify-between">
       <div className="flex min-h-0 flex-1 flex-col">
         <div className="flex items-center gap-3 px-6 py-6">
-          <Image src="/dummy-logo.svg" alt="Win FX" width={36} height={36} className="rounded-xl" />
-          <span className="text-base font-bold tracking-wide text-white">Win FX</span>
+          <Image src="/primeLogo.png" alt="PRIMEFX" width={36} height={36} className="rounded-xl" />
+          <span className="text-base font-bold tracking-wide text-white">PRIMEFX</span>
         </div>
 
         <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto px-3 pb-4">

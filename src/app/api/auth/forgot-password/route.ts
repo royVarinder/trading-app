@@ -46,11 +46,11 @@ export async function POST(req: Request) {
 
   await sendMail(
     user.email,
-    "Reset your Win FX password",
+    "Reset your PRIMEFX password",
     [
       `Hi ${user.username},`,
       "",
-      "We received a request to reset your Win FX password. Click the link below to choose a new one:",
+      "We received a request to reset your PRIMEFX password. Click the link below to choose a new one:",
       resetLink,
       "",
       "This link expires in 1 hour. If you didn't request this, you can safely ignore this email.",

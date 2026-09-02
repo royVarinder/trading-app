@@ -40,8 +40,8 @@ export function DirectTeam({ memberId }: { memberId: string }) {
       name: m.username,
       sponsor: memberId,
       mobile: m.mobile,
-      package: `$${m.ownApproved.toFixed(2)}`,
-      business: `$${m.subtreeApproved.toFixed(2)}`,
+      package: `$${m.ownInvested.toFixed(2)}`,
+      business: `$${m.subtreeInvested.toFixed(2)}`,
       status: <StatusBadge status={m.status} />,
     })) ?? [];
 

@@ -103,7 +103,7 @@ export async function POST(req: Request) {
   });
 
   await sendAdminEmail(
-    "New Win FX signup",
+    "New PRIMEFX signup",
     [
       "A new user just signed up.",
       "",

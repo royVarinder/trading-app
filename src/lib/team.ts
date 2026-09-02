@@ -18,19 +18,19 @@ type RawMember = {
   mobile: string;
   createdAt: Date;
   level: number;
-  ownApproved: number;
-  subtreeApproved: number;
+  ownInvested: number;
+  subtreeInvested: number;
   status: "Active" | "Pending";
 };
 
 export async function getTeamSnapshot(memberId: string): Promise<TeamSnapshot> {
   const db = await getDb();
   const downline = await fetchDownline(db, memberId);
-  const approvedByMember = await fetchApprovedTotals(
+  const investedByMember = await fetchInvestedTotals(
     db,
     downline.map((d) => d.memberId)
   );
-  const members = buildRawMembers(downline, approvedByMember);
+  const members = buildRawMembers(downline, investedByMember);
 
   const direct = members.filter((m) => m.level === 1);
   const levels = buildLevelSummaries(members);
@@ -53,8 +53,8 @@ function toSummaryMember(m: RawMember): TeamMemberSummary {
     mobile: m.mobile,
     createdAt: m.createdAt.toISOString(),
     level: m.level,
-    ownApproved: m.ownApproved,
-    subtreeApproved: m.subtreeApproved,
+    ownInvested: m.ownInvested,
+    subtreeInvested: m.subtreeInvested,
     status: m.status,
   };
 }
@@ -91,25 +91,42 @@ async function fetchDownline(db: Db, memberId: string): Promise<DownlineDoc[]> {
   return root?.downline ?? [];
 }
 
-async function fetchApprovedTotals(db: Db, memberIds: string[]): Promise<Map<string, number>> {
+async function fetchInvestedTotals(db: Db, memberIds: string[]): Promise<Map<string, number>> {
   if (memberIds.length === 0) return new Map();
 
-  const totals = await db
-    .collection("deposits")
-    .aggregate<{ _id: string; total: number }>([
-      { $match: { memberId: { $in: memberIds }, status: "Approved" } },
-      { $group: { _id: "$memberId", total: { $sum: "$amount" } } },
-    ])
-    .toArray();
+  // "Invested" covers both the Startup Plan (`investments`) and staking
+  // plans (`stakes`) — both represent capital a member has actually
+  // committed, and both should count toward business/rank totals. A deposit
+  // alone only funds the available balance; a member only counts as paid/
+  // invested once they've actually moved that balance into a plan.
+  const [investmentTotals, stakeTotals] = await Promise.all([
+    db
+      .collection("investments")
+      .aggregate<{ _id: string; total: number }>([
+        { $match: { memberId: { $in: memberIds } } },
+        { $group: { _id: "$memberId", total: { $sum: "$amount" } } },
+      ])
+      .toArray(),
+    db
+      .collection("stakes")
+      .aggregate<{ _id: string; total: number }>([
+        { $match: { memberId: { $in: memberIds } } },
+        { $group: { _id: "$memberId", total: { $sum: "$amount" } } },
+      ])
+      .toArray(),
+  ]);
 
-  return new Map(totals.map((t) => [t._id, t.total]));
+  const merged = new Map<string, number>();
+  for (const t of investmentTotals) merged.set(t._id, (merged.get(t._id) ?? 0) + t.total);
+  for (const t of stakeTotals) merged.set(t._id, (merged.get(t._id) ?? 0) + t.total);
+  return merged;
 }
 
 function buildRawMembers(
   downline: DownlineDoc[],
-  approvedByMember: Map<string, number>
+  investedByMember: Map<string, number>
 ): RawMember[] {
-  const ownApprovedOf = (id: string) => approvedByMember.get(id) ?? 0;
+  const ownInvestedOf = (id: string) => investedByMember.get(id) ?? 0;
 
   const childrenBySponsor = new Map<string, DownlineDoc[]>();
   for (const doc of downline) {
@@ -119,20 +136,20 @@ function buildRawMembers(
     childrenBySponsor.set(key, list);
   }
 
-  const subtreeApprovedOf = new Map<string, number>();
+  const subtreeInvestedOf = new Map<string, number>();
   const byDescendingDepth = [...downline].sort((a, b) => b.depth - a.depth);
   for (const doc of byDescendingDepth) {
     const children = childrenBySponsor.get(doc.memberId) ?? [];
     const childrenTotal = children.reduce(
-      (sum, child) => sum + (subtreeApprovedOf.get(child.memberId) ?? 0),
+      (sum, child) => sum + (subtreeInvestedOf.get(child.memberId) ?? 0),
       0
     );
-    subtreeApprovedOf.set(doc.memberId, ownApprovedOf(doc.memberId) + childrenTotal);
+    subtreeInvestedOf.set(doc.memberId, ownInvestedOf(doc.memberId) + childrenTotal);
   }
 
   return downline.map((doc) => {
-    const ownApproved = ownApprovedOf(doc.memberId);
-    const status: "Active" | "Pending" = ownApproved > 0 ? "Active" : "Pending";
+    const ownInvested = ownInvestedOf(doc.memberId);
+    const status: "Active" | "Pending" = ownInvested > 0 ? "Active" : "Pending";
     return {
       memberId: doc.memberId,
       sponsorId: doc.sponsorId,
@@ -140,8 +157,8 @@ function buildRawMembers(
       mobile: doc.mobile,
       createdAt: doc.createdAt,
       level: doc.depth + 1,
-      ownApproved,
-      subtreeApproved: subtreeApprovedOf.get(doc.memberId) ?? ownApproved,
+      ownInvested,
+      subtreeInvested: subtreeInvestedOf.get(doc.memberId) ?? ownInvested,
       status,
     };
   });
@@ -166,8 +183,8 @@ function buildLevelSummaries(members: RawMember[]): LevelSummary[] {
     levels.push({
       level,
       users: membersAtLevel.length,
-      paid: membersAtLevel.filter((m) => m.ownApproved > 0).length,
-      business: membersAtLevel.reduce((sum, m) => sum + m.ownApproved, 0),
+      paid: membersAtLevel.filter((m) => m.ownInvested > 0).length,
+      business: membersAtLevel.reduce((sum, m) => sum + m.ownInvested, 0),
     });
   }
   return levels;
@@ -183,5 +200,23 @@ function buildSummary(direct: RawMember[], allTeam: RawMember[]): TeamSummary {
     totalTeam: allTeam.length,
     activeTeam,
     pendingTeam: allTeam.length - activeTeam,
+    directBusiness: direct.reduce((sum, m) => sum + m.ownInvested, 0),
+    teamBusiness: allTeam.reduce((sum, m) => sum + m.ownInvested, 0),
+  };
+}
+
+export async function getBusinessTotals(
+  memberId: string
+): Promise<{ selfInvestment: number; directBusiness: number; teamBusiness: number }> {
+  const db = await getDb();
+  const [snapshot, selfTotals] = await Promise.all([
+    getTeamSnapshot(memberId),
+    fetchInvestedTotals(db, [memberId]),
+  ]);
+
+  return {
+    selfInvestment: selfTotals.get(memberId) ?? 0,
+    directBusiness: snapshot.summary.directBusiness,
+    teamBusiness: snapshot.summary.teamBusiness,
   };
 }

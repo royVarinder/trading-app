@@ -25,7 +25,7 @@ function getClientPromise(): Promise<MongoClient> {
 
 export async function getDb(): Promise<Db> {
   const client = await getClientPromise();
-  const db = client.db(process.env.MONGODB_DB || "winfx");
+  const db = client.db(process.env.MONGODB_DB || "primefx");
 
   if (!indexesEnsured) {
     indexesEnsured = true;
@@ -40,10 +40,16 @@ export async function getDb(): Promise<Db> {
         ]),
       db.collection("users").createIndex({ sponsorId: 1 }),
       db.collection("deposits").createIndex({ memberId: 1, createdAt: -1 }),
+      db.collection("investments").createIndex({ memberId: 1, createdAt: -1 }),
       db.collection("tickets").createIndex({ memberId: 1, createdAt: -1 }),
       db.collection("withdrawals").createIndex({ memberId: 1, type: 1, createdAt: -1 }),
       db.collection("passwordResets").createIndex({ token: 1 }, { unique: true }),
       db.collection("passwordResets").createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 }),
+      db.collection("stakes").createIndex({ memberId: 1, createdAt: -1 }),
+      db.collection("bonusLedger").createIndex({ memberId: 1, date: -1 }),
+      db.collection("bonusLedger").createIndex({ positionId: 1, date: 1 }, { unique: true }),
+      db.collection("leadershipLedger").createIndex({ beneficiaryMemberId: 1, date: -1 }),
+      db.collection("rewardLedger").createIndex({ memberId: 1, month: 1 }, { unique: true }),
     ]).catch(() => {
       indexesEnsured = false;
     });

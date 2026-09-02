@@ -46,7 +46,7 @@ export default function LoginPage() {
 
   return (
     <AuthShell
-      title="Welcome to Win FX"
+      title="Welcome to PRIMEFX"
       subtitle="To keep connected with us please login with your personal information by user ID and password."
       footer={
         <div className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1">

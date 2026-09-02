@@ -55,7 +55,7 @@ export async function POST(req: Request) {
   const result = await db.collection("tickets").insertOne(doc);
 
   await sendAdminEmail(
-    "New support ticket — Win FX",
+    "New support ticket — PRIMEFX",
     [
       "A new support ticket was submitted.",
       "",

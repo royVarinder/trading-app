@@ -41,7 +41,7 @@ export async function POST(req: Request) {
   });
 
   await sendAdminEmail(
-    "Win FX login",
+    "PRIMEFX login",
     [
       "A user just logged in.",
       "",

@@ -13,5 +13,5 @@ export async function getNextMemberId(): Promise<string> {
     );
 
   const seq = result?.seq ?? 1;
-  return `WF${MEMBER_ID_BASE + seq}`;
+  return `PFX${MEMBER_ID_BASE + seq}`;
 }

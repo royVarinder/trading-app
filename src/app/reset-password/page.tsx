@@ -66,7 +66,7 @@ export default function ResetPasswordPage() {
   return (
     <AuthShell
       title="Set a new password"
-      subtitle="Choose a new password for your Win FX account."
+      subtitle="Choose a new password for your PRIMEFX account."
       footer={
         <Link href="/login" className="font-semibold text-brand-purple hover:underline">
           Back to sign in

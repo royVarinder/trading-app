@@ -17,8 +17,8 @@ export function AuthShell({
       <div className="relative w-full max-w-md rounded-3xl bg-white p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.55)] sm:p-10">
         <div className="mb-6 flex justify-center">
           <Image
-            src="/dummy-logo.svg"
-            alt="Win FX"
+            src="/primeLogo.png"
+            alt="PRIMEFX"
             width={72}
             height={72}
             className="rounded-2xl"

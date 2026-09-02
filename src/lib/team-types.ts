@@ -5,16 +5,16 @@ export type TeamMemberSummary = {
   mobile: string;
   createdAt: string; // ISO string — this is the wire format, not a Date
   level: number; // 1 = direct referral, 2 = their referrals, ...
-  ownApproved: number; // sum of this member's own approved deposits
-  subtreeApproved: number; // ownApproved + all descendants' ownApproved
-  status: "Active" | "Pending"; // Active iff ownApproved > 0
+  ownInvested: number; // sum of this member's own investment packages
+  subtreeInvested: number; // ownInvested + all descendants' ownInvested
+  status: "Active" | "Pending"; // Active iff ownInvested > 0
 };
 
 export type LevelSummary = {
   level: number;
   users: number;
   paid: number;
-  business: number; // sum of ownApproved at this level only
+  business: number; // sum of ownInvested at this level only
 };
 
 export type TeamSummary = {
@@ -24,6 +24,8 @@ export type TeamSummary = {
   totalTeam: number;
   activeTeam: number;
   pendingTeam: number;
+  directBusiness: number; // sum of ownInvested across direct[] (level 1 only)
+  teamBusiness: number;   // sum of ownInvested across allTeam[] (every level)
 };
 
 export type TeamSnapshot = {

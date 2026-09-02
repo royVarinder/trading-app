@@ -17,18 +17,18 @@ import {
   GridIcon,
 } from "@/components/icons";
 
-const STATS = [
-  { label: "Direct Team Business", value: "$0", icon: TreeIcon },
-  { label: "Total Team Business", value: "$0", icon: LayersIcon },
-  { label: "Staking Trading Bonus", value: "$6.00", icon: TrendingUpIcon },
-  { label: "Investment Trading Bonus", value: "$0.75", icon: ReportIcon },
-  { label: "Leadership Bonus", value: "$0", icon: ShieldIcon },
-  { label: "Total Income", value: "$6.75", icon: DepositIcon },
-  { label: "Total Withdrawal", value: "$0", icon: WithdrawIcon },
-  { label: "Net Income", value: "$6.75", icon: IdIcon },
-  { label: "Reward Bonus", value: "$0", icon: TicketIcon },
-  { label: "Fund Wallet", value: "$0.00", icon: GridIcon },
-];
+type WalletSummary = {
+  rank: string;
+  totalSelfInvestment: number;
+  totalStakingBonus: number;
+  totalInvestmentBonus: number;
+  totalLeadership: number;
+  totalRewards: number;
+  totalIncome: number;
+  totalIncomeWithdrawal: number;
+  netIncome: number;
+  availableFund: number;
+};
 
 const TICKER_SYMBOLS = [
   { proName: "FOREXCOM:SPXUSD", title: "S&P 500 Index" },
@@ -37,6 +37,31 @@ const TICKER_SYMBOLS = [
   { proName: "BITSTAMP:ETHUSD", title: "Ethereum" },
 ];
 
+// Hoisted to module scope (not inlined as JSX props) so the object identity
+// stays stable across re-renders. TradingViewWidget re-injects its external
+// <script> whenever its `config` prop changes identity; DashboardView now
+// re-renders after its /api/team and /api/wallet fetches resolve, and an
+// inline object literal would get a fresh identity on every one of those,
+// tearing the widget down and rebuilding it while TradingView's own async
+// script is still initializing — which throws `querySelector` on the
+// already-cleared container.
+const TICKER_TAPE_CONFIG = {
+  symbols: TICKER_SYMBOLS,
+  isTransparent: true,
+  displayMode: "adaptive",
+  colorTheme: "dark",
+  locale: "en",
+};
+
+const FOREX_CROSS_RATES_CONFIG = {
+  width: "100%",
+  height: 400,
+  currencies: ["EUR", "USD", "JPY", "GBP", "CHF", "AUD", "CAD", "NZD"],
+  isTransparent: true,
+  colorTheme: "light",
+  locale: "en",
+};
+
 const EMPTY_SUMMARY: TeamSummary = {
   totalDirect: 0,
   activeDirect: 0,
@@ -44,10 +69,26 @@ const EMPTY_SUMMARY: TeamSummary = {
   totalTeam: 0,
   activeTeam: 0,
   pendingTeam: 0,
+  directBusiness: 0,
+  teamBusiness: 0,
+};
+
+const EMPTY_WALLET: WalletSummary = {
+  rank: "No-Rank",
+  totalSelfInvestment: 0,
+  totalStakingBonus: 0,
+  totalInvestmentBonus: 0,
+  totalLeadership: 0,
+  totalRewards: 0,
+  totalIncome: 0,
+  totalIncomeWithdrawal: 0,
+  netIncome: 0,
+  availableFund: 0,
 };
 
 export function DashboardView({ memberId }: { memberId: string }) {
   const [summary, setSummary] = useState<TeamSummary>(EMPTY_SUMMARY);
+  const [wallet, setWallet] = useState<WalletSummary>(EMPTY_WALLET);
 
   useEffect(() => {
     let cancelled = false;
@@ -60,10 +101,31 @@ export function DashboardView({ memberId }: { memberId: string }) {
       })
       .catch(() => {});
 
+    fetch("/api/wallet")
+      .then((res) => res.json())
+      .then((data) => {
+        if (cancelled || data.error) return;
+        setWallet(data);
+      })
+      .catch(() => {});
+
     return () => {
       cancelled = true;
     };
   }, []);
+
+  const stats = [
+    { label: "Direct Team Business", value: `$${summary.directBusiness.toFixed(2)}`, icon: TreeIcon },
+    { label: "Total Team Business", value: `$${summary.teamBusiness.toFixed(2)}`, icon: LayersIcon },
+    { label: "Staking Trading Bonus", value: `$${wallet.totalStakingBonus.toFixed(2)}`, icon: TrendingUpIcon },
+    { label: "Investment Trading Bonus", value: `$${wallet.totalInvestmentBonus.toFixed(2)}`, icon: ReportIcon },
+    { label: "Leadership Bonus", value: `$${wallet.totalLeadership.toFixed(2)}`, icon: ShieldIcon },
+    { label: "Total Income", value: `$${wallet.totalIncome.toFixed(2)}`, icon: DepositIcon },
+    { label: "Total Withdrawal", value: `$${wallet.totalIncomeWithdrawal.toFixed(2)}`, icon: WithdrawIcon },
+    { label: "Net Income", value: `$${wallet.netIncome.toFixed(2)}`, icon: IdIcon },
+    { label: "Reward Bonus", value: `$${wallet.totalRewards.toFixed(2)}`, icon: TicketIcon },
+    { label: "Fund Wallet", value: `$${wallet.availableFund.toFixed(2)}`, icon: GridIcon },
+  ];
 
   return (
     <div className="space-y-6">
@@ -79,20 +141,14 @@ export function DashboardView({ memberId }: { memberId: string }) {
           Notification
         </span>
         <p className="text-sm font-bold text-white">
-          Welcome to Win FX — your dashboard is up to date.
+          Welcome to PRIMEFX — your dashboard is up to date.
         </p>
       </div>
 
       <div className="overflow-hidden rounded-2xl bg-brand-ink p-2 shadow-sm">
         <TradingViewWidget
           scriptSrc="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js"
-          config={{
-            symbols: TICKER_SYMBOLS,
-            isTransparent: true,
-            displayMode: "adaptive",
-            colorTheme: "dark",
-            locale: "en",
-          }}
+          config={TICKER_TAPE_CONFIG}
         />
       </div>
 
@@ -101,11 +157,11 @@ export function DashboardView({ memberId }: { memberId: string }) {
           title="Account Information"
           rows={[
             { label: "User ID", value: memberId },
-            { label: "Rank", value: "No-Rank" },
-            { label: "Total Self Investment", value: "$550" },
-            { label: "Total Income", value: "$6.75" },
-            { label: "Total Withdrawal", value: "$0" },
-            { label: "Net Income", value: "$6.75", valueClassName: "text-emerald-600" },
+            { label: "Rank", value: wallet.rank },
+            { label: "Total Self Investment", value: `$${wallet.totalSelfInvestment.toFixed(2)}` },
+            { label: "Total Income", value: `$${wallet.totalIncome.toFixed(2)}` },
+            { label: "Total Withdrawal", value: `$${wallet.totalIncomeWithdrawal.toFixed(2)}` },
+            { label: "Net Income", value: `$${wallet.netIncome.toFixed(2)}`, valueClassName: "text-emerald-600" },
           ]}
         />
         <InfoCard
@@ -123,7 +179,7 @@ export function DashboardView({ memberId }: { memberId: string }) {
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {STATS.map((stat) => {
+        {stats.map((stat) => {
           const Icon = stat.icon;
           return (
             <div
@@ -158,14 +214,7 @@ export function DashboardView({ memberId }: { memberId: string }) {
       <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white p-2 shadow-sm">
         <TradingViewWidget
           scriptSrc="https://s3.tradingview.com/external-embedding/embed-widget-forex-cross-rates.js"
-          config={{
-            width: "100%",
-            height: 400,
-            currencies: ["EUR", "USD", "JPY", "GBP", "CHF", "AUD", "CAD", "NZD"],
-            isTransparent: true,
-            colorTheme: "light",
-            locale: "en",
-          }}
+          config={FOREX_CROSS_RATES_CONFIG}
         />
       </div>
     </div>

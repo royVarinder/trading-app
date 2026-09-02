@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Win FX",
-  description: "Win FX member dashboard",
+  title: "PRIMEFX",
+  description: "PRIMEFX member dashboard",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

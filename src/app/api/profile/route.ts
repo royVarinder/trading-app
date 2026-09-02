@@ -82,11 +82,11 @@ export async function PUT(req: Request) {
 
   await sendMail(
     email,
-    "Your Win FX profile was updated",
+    "Your PRIMEFX profile was updated",
     [
       `Hi ${username},`,
       "",
-      "Your Win FX profile was just updated. Here are your current details:",
+      "Your PRIMEFX profile was just updated. Here are your current details:",
       `Name: ${username}`,
       `Email: ${email}`,
       `Mobile: ${countryCode} ${mobile}`,

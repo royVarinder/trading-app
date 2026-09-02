@@ -1,1 +1,1 @@
-export const SESSION_COOKIE_NAME = "winfx_session";
+export const SESSION_COOKIE_NAME = "primefx_session";

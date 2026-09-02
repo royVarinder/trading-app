@@ -54,7 +54,7 @@ export function HomeShell({ username, memberId }: { username: string; memberId: 
     "income-staking-bonus": <IncomeStakingBonus memberId={memberId} />,
     "income-inv-bonus": <IncomeInvBonus memberId={memberId} />,
     "income-all-bonus": <IncomeAllBonus memberId={memberId} />,
-    "income-leadership": <IncomeLeadership />,
+    "income-leadership": <IncomeLeadership memberId={memberId} />,
     "income-monthly-reward": <IncomeMonthlyReward />,
     withdraw: <Withdraw />,
     "withdraw-history": <WithdrawHistory memberId={memberId} username={username} />,

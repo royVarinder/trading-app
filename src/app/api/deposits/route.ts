@@ -60,7 +60,7 @@ export async function POST(req: Request) {
   const result = await db.collection("deposits").insertOne(doc);
 
   await sendAdminEmail(
-    "New deposit request — Win FX",
+    "New deposit request — PRIMEFX",
     [
       "A new deposit request was submitted.",
       "",
