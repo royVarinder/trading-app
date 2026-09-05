@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/lib/mongodb";
 import { getSession } from "@/lib/session";
 import { getAvailableFund } from "@/lib/fund";
-import { getStakingTier } from "@/lib/plans";
+import { getSettings } from "@/lib/settings";
 
 export async function GET() {
   const session = await getSession();
@@ -42,7 +42,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
-  const tier = getStakingTier(typeof body.tierId === "string" ? body.tierId : "");
+  const { stakingTiers } = await getSettings();
+  const tierId = typeof body.tierId === "string" ? body.tierId : "";
+  const tier = stakingTiers.find((t) => t.id === tierId);
   if (!tier) {
     return NextResponse.json({ error: "Select a valid staking plan." }, { status: 400 });
   }

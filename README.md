@@ -6,7 +6,7 @@ PRIMEFX is a member dashboard for a forex/trading investment platform, rebuilt w
 
 The visual design and menu structure (login, signup, sidebar navigation, dashboard layout) were recreated to match the reference site, then wired up to an actual backend so the core member flows genuinely work end-to-end instead of being static mockups. The business logic — investment/staking daily returns, leadership commissions, monthly rank rewards, withdrawal rules — follows the numbers in this project's PRIMEFX business plan PDF.
 
-**This remains a demo/portfolio app.** The deposit wallet address is a placeholder, there is no real payment processor, and there is no in-app admin panel — deposits, withdrawals, and staking requests are approved by editing MongoDB directly, the same way the original deposits flow always worked.
+**This remains a demo/portfolio app.** The deposit wallet address is a placeholder and there is no real payment processor. An in-app admin panel (`/admin`) now exists — see below — so deposits, withdrawals, staking, members, and tickets are managed from the UI instead of by editing MongoDB directly.
 
 ## What's functional today
 
@@ -43,6 +43,18 @@ The visual design and menu structure (login, signup, sidebar navigation, dashboa
 **Navigation**
 - Sidebar profile-picture dropdown (Dashboard / Profile / Change Password / Logout)
 - Live TradingView ticker tape + forex cross-rates widgets on the dashboard
+
+**Admin panel** (`/admin`, separate login/session from members)
+- Auth: `/admin/login`, JWT session in its own cookie, two roles (`super_admin` / `admin`); no admin signup — seed the first account with `npm run seed:admin -- <username> <email> <password> [role]`
+- Dashboard: pending-queue counts, platform totals, daily-accrual status, manual "Run Accrual Now"
+- Deposits / Withdrawals: approve, reject (with reason, emailed to the member), and mark-paid queues, filterable by status; withdrawals also filter by type (income/investment)
+- Investments & Staking: every position across every member, with a status override (Active/Paused/Closed/Completed) that stops further daily accrual
+- Members: searchable directory, per-member detail (profile, wallet, team, history), suspend/reactivate, and an audited manual balance adjustment for dispute resolution
+- Support Tickets: inbox across all members, inline reply (emailed to the member) and close
+- Ledger: platform-wide trading bonus / leadership commission / monthly reward totals and rank distribution
+- Settings: deposit wallet address, withdrawal min/charge, and the Startup Plan / Staking Tiers / Leadership Ranks — editable and take effect immediately (`src/lib/settings.ts`, DB-backed with the original `src/lib/plans.ts` constants as defaults)
+- Reports: CSV/JSON export of deposits, withdrawals, and signups by date range
+- Audit Log: every admin action (approvals, rejections, adjustments, settings changes) with actor, target, and details
 
 ## Tech stack
 
@@ -89,6 +101,14 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000), sign up for an account, and you're in.
 
+To use the admin panel, seed a super-admin account first (there is no admin signup form by design):
+
+```bash
+npm run seed:admin -- admin admin@example.com a-strong-password super_admin
+```
+
+Then sign in at [http://localhost:3000/admin/login](http://localhost:3000/admin/login).
+
 ### 4. Build for production
 
 ```bash
@@ -102,24 +122,38 @@ npm run start
 src/
   app/
     (auth pages)         login, signup, forgot-password, reset-password
+    admin/
+      login/              admin login (public)
+      (protected)/         dashboard, deposits, withdrawals, investments, members,
+                            members/[memberId], tickets, ledger, settings, reports,
+                            audit-log — layout.tsx guards the whole group
     api/                 auth, account, profile, deposits, withdrawals, tickets,
                           investments, stakes, income/*, wallet, wallet-address,
-                          team, cron/accrue
+                          team, cron/accrue, settings/public
+    api/admin/            auth, deposits, withdrawals, investments, stakes, members,
+                          tickets, ledger, settings, reports, audit-log, overview, accrue
     page.tsx             dashboard shell (server component, reads session,
                           triggers the daily accrual job)
   components/
     dashboard/           one component per sidebar page
     dashboard/shared/     DataTable, InfoCard, Skeleton, PageHeader, TradingViewWidget
+    admin/                AdminShell (sidebar + topbar for the whole admin area)
     Sidebar.tsx           nested accordion menu + profile dropdown
     HomeShell.tsx         client-side menu routing
   lib/
     mongodb.ts            connection + index setup
-    session.ts             JWT cookie helpers
+    session.ts             member JWT cookie helpers
+    adminSession.ts         admin JWT cookie helpers (separate cookie/session)
+    adminGuard.ts            requireAdmin/requireSuperAdmin route guards
+    audit.ts                 logAdminAction — every admin mutation writes here
+    settings.ts               DB-backed plan/rate config, falls back to plans.ts
     mailer.ts               nodemailer wrapper
     counters.ts             sequential Member ID generator
-    plans.ts                Startup/staking plan and leadership rank constants
+    plans.ts                Startup/staking plan and leadership rank constants (defaults)
     team.ts                 referral genealogy + business-total computation
-    fund.ts                 available-fund computation
+    fund.ts                 available-fund computation (includes admin adjustments)
     aggregate.ts             shared MongoDB sum-field helper
     accrual.ts               the daily accrual + wallet-math engine
+scripts/
+  create-admin.mjs        seeds/promotes an admin account (npm run seed:admin)
 ```

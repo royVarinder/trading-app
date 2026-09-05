@@ -3,6 +3,7 @@ import { getDb } from "@/lib/mongodb";
 import { sumField } from "@/lib/aggregate";
 import { rankForTotals, type LeadershipRank } from "@/lib/plans";
 import { getBusinessTotals } from "@/lib/team";
+import { getSettings } from "@/lib/settings";
 
 function round2(n: number): number {
   return Math.round(n * 100) / 100;
@@ -193,10 +194,11 @@ async function runMonthlyRewardPhase(db: Db, date: string): Promise<void> {
   if (watermark?.lastRewardMonth === month) return;
 
   const members = await db.collection("users").find({}, { projection: { memberId: 1 } }).toArray();
+  const settings = await getSettings();
 
   for (const member of members) {
     const totals = await getBusinessTotals(member.memberId);
-    const rank = rankForTotals(totals);
+    const rank = rankForTotals(totals, settings.leadershipRanks);
     if (!rank) continue;
 
     try {
@@ -226,8 +228,8 @@ export async function runDailyAccrual(): Promise<void> {
 }
 
 export async function computeRank(memberId: string): Promise<LeadershipRank | null> {
-  const totals = await getBusinessTotals(memberId);
-  return rankForTotals(totals);
+  const [totals, settings] = await Promise.all([getBusinessTotals(memberId), getSettings()]);
+  return rankForTotals(totals, settings.leadershipRanks);
 }
 
 export type WalletSummary = {
@@ -264,8 +266,18 @@ export async function getWalletSummary(memberId: string): Promise<WalletSummary>
     sumField(db, "bonusLedger", { memberId, positionType: "investment" }, "income"),
     sumField(db, "leadershipLedger", { beneficiaryMemberId: memberId }, "income"),
     sumField(db, "rewardLedger", { memberId }, "amount"),
-    sumField(db, "withdrawals", { memberId, type: "income", status: { $in: ["Pending", "Approved"] } }, "amount"),
-    sumField(db, "withdrawals", { memberId, type: "investment", status: { $in: ["Pending", "Approved"] } }, "amount"),
+    sumField(
+      db,
+      "withdrawals",
+      { memberId, type: "income", status: { $in: ["Pending", "Approved", "Paid"] } },
+      "amount"
+    ),
+    sumField(
+      db,
+      "withdrawals",
+      { memberId, type: "investment", status: { $in: ["Pending", "Approved", "Paid"] } },
+      "amount"
+    ),
     computeRank(memberId),
   ]);
 

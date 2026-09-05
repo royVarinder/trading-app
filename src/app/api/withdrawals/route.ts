@@ -2,15 +2,13 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/lib/mongodb";
 import { getSession } from "@/lib/session";
 import { getWalletSummary } from "@/lib/accrual";
+import { getSettings } from "@/lib/settings";
 
 type WithdrawalType = "income" | "investment";
 
 function parseType(value: string | null): WithdrawalType | null {
   return value === "income" || value === "investment" ? value : null;
 }
-
-const MIN_WITHDRAWAL = 10;
-const ADMIN_CHARGE_RATE = 0.05;
 
 export async function GET(req: Request) {
   const session = await getSession();
@@ -58,12 +56,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid withdrawal type." }, { status: 400 });
   }
 
+  const { withdrawalMin, withdrawalAdminChargeRate } = await getSettings();
+
   const amount = Number(body.amount);
   if (!Number.isFinite(amount) || amount <= 0) {
     return NextResponse.json({ error: "Enter a valid withdrawal amount." }, { status: 400 });
   }
-  if (amount < MIN_WITHDRAWAL) {
-    return NextResponse.json({ error: `Minimum withdrawal is $${MIN_WITHDRAWAL}.` }, { status: 400 });
+  if (amount < withdrawalMin) {
+    return NextResponse.json({ error: `Minimum withdrawal is $${withdrawalMin}.` }, { status: 400 });
   }
 
   const summary = await getWalletSummary(session.memberId);
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Amount exceeds your available balance." }, { status: 400 });
   }
 
-  const adminCharge = Math.round(amount * ADMIN_CHARGE_RATE * 100) / 100;
+  const adminCharge = Math.round(amount * withdrawalAdminChargeRate * 100) / 100;
   const netAmount = Math.round((amount - adminCharge) * 100) / 100;
 
   const db = await getDb();
