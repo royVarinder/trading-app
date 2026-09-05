@@ -13,7 +13,7 @@ export function AuthShell({
   footer: ReactNode;
 }) {
   return (
-    <div className="mesh-bg flex min-h-screen w-full items-center justify-center px-4 py-10">
+    <div className="mesh-bg relative flex min-h-screen w-full items-center justify-center px-4 py-10">
       <div className="relative w-full max-w-md rounded-3xl bg-white p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.55)] sm:p-10">
         <div className="mb-6 flex justify-center">
           <Image

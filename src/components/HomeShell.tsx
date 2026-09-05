@@ -2,7 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Image from "next/image";
 import { Sidebar } from "@/components/Sidebar";
+import { MenuIcon } from "@/components/icons";
 import type { MenuId } from "@/components/dashboard/menu";
 import { DashboardView } from "@/components/dashboard/DashboardView";
 import { DepositFund } from "@/components/dashboard/DepositFund";
@@ -33,6 +35,7 @@ import { ViewTicket } from "@/components/dashboard/ViewTicket";
 export function HomeShell({ username, memberId }: { username: string; memberId: string }) {
   const router = useRouter();
   const [active, setActive] = useState<MenuId>("dashboard");
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -76,8 +79,24 @@ export function HomeShell({ username, memberId }: { username: string; memberId: 
         username={username}
         memberId={memberId}
         onLogout={handleLogout}
+        mobileOpen={mobileNavOpen}
+        onCloseMobile={() => setMobileNavOpen(false)}
       />
-      <main className="flex-1 overflow-y-auto p-6 sm:p-8">{content[active]}</main>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex items-center gap-3 border-b border-gray-100 bg-white px-4 py-3 lg:hidden">
+          <button
+            type="button"
+            onClick={() => setMobileNavOpen(true)}
+            aria-label="Open menu"
+            className="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100"
+          >
+            <MenuIcon className="h-6 w-6" />
+          </button>
+          <Image src="/primeLogo.png" alt="PRIMEFX" width={28} height={28} className="rounded-lg" />
+          <span className="text-sm font-bold tracking-wide text-[#1f2430]">PRIMEFX</span>
+        </div>
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">{content[active]}</main>
+      </div>
     </div>
   );
 }

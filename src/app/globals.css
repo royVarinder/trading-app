@@ -38,9 +38,16 @@ body {
   color: var(--foreground);
 }
 
-/* Dark "network mesh" backdrop shared by auth screens and the dashboard rail. */
+/* Dark "network mesh" backdrop shared by auth screens and the dashboard rail.
+   No `position` here on purpose: this class is emitted after Tailwind's own
+   utilities (it comes after `@import "tailwindcss"` in this file), so any
+   position it set would win a specificity tie against every Tailwind
+   position utility (fixed/static/relative) at every breakpoint — which is
+   exactly what silently broke the mobile sidebar drawer (see Sidebar.tsx /
+   AdminShell.tsx, which now carry their own `relative`/`fixed` utility and
+   rely on it actually taking effect). Each element using `.mesh-bg` is
+   responsible for declaring its own `position` utility instead. */
 .mesh-bg {
-  position: relative;
   background-color: var(--brand-ink);
   background-image:
     radial-gradient(circle at 15% 20%, rgba(109, 74, 255, 0.25), transparent 45%),
