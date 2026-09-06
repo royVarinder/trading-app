@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/lib/mongodb";
 import { getSession } from "@/lib/session";
 import { sendAdminEmail } from "@/lib/mailer";
+import { MIN_DEPOSIT_AMOUNT } from "@/lib/constants";
 
 export async function GET() {
   const session = await getSession();
@@ -41,8 +42,11 @@ export async function POST(req: Request) {
   const amount = Number(body.amount);
   const transactionHash = typeof body.transactionHash === "string" ? body.transactionHash.trim() : "";
 
-  if (!Number.isFinite(amount) || amount <= 0) {
-    return NextResponse.json({ error: "Enter a valid fund amount." }, { status: 400 });
+  if (!Number.isFinite(amount) || amount < MIN_DEPOSIT_AMOUNT) {
+    return NextResponse.json(
+      { error: `Minimum deposit amount is $${MIN_DEPOSIT_AMOUNT}.` },
+      { status: 400 }
+    );
   }
   if (!transactionHash) {
     return NextResponse.json({ error: "Transaction hash is required." }, { status: 400 });

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/lib/mongodb";
 import { getSession, setSessionCookie } from "@/lib/session";
 import { sendMail } from "@/lib/mailer";
+import { getTotalApprovedDeposits } from "@/lib/fund";
+import { REFERRAL_DEPOSIT_THRESHOLD } from "@/lib/constants";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -21,6 +23,8 @@ export async function GET() {
     return NextResponse.json({ error: "User not found." }, { status: 404 });
   }
 
+  const totalApprovedDeposits = await getTotalApprovedDeposits(db, session.memberId);
+
   return NextResponse.json({
     profile: {
       memberId: user.memberId,
@@ -30,6 +34,7 @@ export async function GET() {
       mobile: user.mobile,
       sponsorId: user.sponsorId ?? null,
       createdAt: user.createdAt,
+      canRefer: totalApprovedDeposits >= REFERRAL_DEPOSIT_THRESHOLD,
     },
   });
 }
@@ -103,6 +108,8 @@ export async function PUT(req: Request) {
     return NextResponse.json({ error: "User not found." }, { status: 404 });
   }
 
+  const totalApprovedDeposits = await getTotalApprovedDeposits(db, session.memberId);
+
   return NextResponse.json({
     profile: {
       memberId: updated.memberId,
@@ -112,6 +119,7 @@ export async function PUT(req: Request) {
       mobile: updated.mobile,
       sponsorId: updated.sponsorId ?? null,
       createdAt: updated.createdAt,
+      canRefer: totalApprovedDeposits >= REFERRAL_DEPOSIT_THRESHOLD,
     },
   });
 }

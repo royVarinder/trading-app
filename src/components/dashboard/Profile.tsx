@@ -15,6 +15,7 @@ type ProfileData = {
   mobile: string;
   sponsorId: string | null;
   createdAt: string;
+  canRefer: boolean;
 };
 
 export function Profile() {
@@ -213,20 +214,30 @@ export function Profile() {
           }
         />
 
-        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-          <h2 className="text-sm font-semibold text-[#1f2430]">Your Referral Link</h2>
-          <p className="mt-1 text-xs text-gray-500">
-            Share this link — anyone who signs up through it is added under you as their sponsor.
-          </p>
-          <button
-            type="button"
-            onClick={copyReferralLink}
-            className="mt-3 w-full truncate rounded-xl bg-gray-50 px-3 py-2.5 text-left font-mono text-xs text-gray-600 transition hover:bg-gray-100"
-            title="Click to copy"
-          >
-            {copied ? "Copied to clipboard!" : referralLink}
-          </button>
-        </div>
+        {profile.canRefer ? (
+          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+            <h2 className="text-sm font-semibold text-[#1f2430]">Your Referral Link</h2>
+            <p className="mt-1 text-xs text-gray-500">
+              Share this link — anyone who signs up through it is added under you as their sponsor.
+            </p>
+            <button
+              type="button"
+              onClick={copyReferralLink}
+              className="mt-3 w-full truncate rounded-xl bg-gray-50 px-3 py-2.5 text-left font-mono text-xs text-gray-600 transition hover:bg-gray-100"
+              title="Click to copy"
+            >
+              {copied ? "Copied to clipboard!" : referralLink}
+            </button>
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+            <h2 className="text-sm font-semibold text-[#1f2430]">Your Referral Link</h2>
+            <p className="mt-1 text-xs text-gray-500">
+              Deposit $50 or more (and get it approved) to unlock your referral link and start sponsoring
+              new members.
+            </p>
+          </div>
+        )}
       </div>
     );
   }

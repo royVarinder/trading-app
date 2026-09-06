@@ -54,7 +54,8 @@ export async function POST(req: Request) {
       resetLink,
       "",
       "This link expires in 1 hour. If you didn't request this, you can safely ignore this email.",
-    ].join("\n")
+    ].join("\n"),
+    { critical: true }
   );
 
   return genericResponse;

@@ -5,6 +5,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { PageHeader } from "@/components/dashboard/shared/PageHeader";
 
 const FALLBACK_WALLET_ADDRESS = "0xDEM0A11cCB185545aC41CA8C2772DB579946F6";
+const MIN_DEPOSIT_AMOUNT = 50;
 
 export function DepositFund() {
   const [walletAddress, setWalletAddress] = useState(FALLBACK_WALLET_ADDRESS);
@@ -48,6 +49,12 @@ export function DepositFund() {
     const formData = new FormData(form);
     const amount = Number(formData.get("fundAmount"));
     const transactionHash = String(formData.get("txHash") ?? "").trim();
+
+    if (!Number.isFinite(amount) || amount < MIN_DEPOSIT_AMOUNT) {
+      setError(`Minimum deposit amount is $${MIN_DEPOSIT_AMOUNT}.`);
+      setSubmitting(false);
+      return;
+    }
 
     try {
       const res = await fetch("/api/deposits", {
@@ -101,9 +108,18 @@ export function DepositFund() {
         <form className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2" onSubmit={handleSubmit}>
           <div>
             <label className="field-label" htmlFor="fundAmount">
-              Fund Amount
+              Fund Amount (min {`$${MIN_DEPOSIT_AMOUNT}`})
             </label>
-            <input id="fundAmount" name="fundAmount" type="number" min={1} step="0.01" placeholder="Enter Fund Amount" className="field-input" required />
+            <input
+              id="fundAmount"
+              name="fundAmount"
+              type="number"
+              min={MIN_DEPOSIT_AMOUNT}
+              step="0.01"
+              placeholder={`Enter Fund Amount (min $${MIN_DEPOSIT_AMOUNT})`}
+              className="field-input"
+              required
+            />
           </div>
           <div>
             <label className="field-label" htmlFor="txHash">

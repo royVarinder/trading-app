@@ -4,6 +4,8 @@ import { getDb } from "@/lib/mongodb";
 import { getNextMemberId } from "@/lib/counters";
 import { setSessionCookie } from "@/lib/session";
 import { sendAdminEmail } from "@/lib/mailer";
+import { getTotalApprovedDeposits } from "@/lib/fund";
+import { REFERRAL_DEPOSIT_THRESHOLD } from "@/lib/constants";
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
@@ -61,6 +63,17 @@ export async function POST(req: Request) {
     if (!sponsor) {
       return NextResponse.json(
         { error: "That referral / sponsor ID doesn't match any existing member." },
+        { status: 400 }
+      );
+    }
+
+    // Sponsors only unlock the ability to refer others once they've
+    // personally funded at least REFERRAL_DEPOSIT_THRESHOLD — see
+    // getTotalApprovedDeposits and the matching UI gate in /api/profile.
+    const sponsorDeposits = await getTotalApprovedDeposits(db, sponsorId);
+    if (sponsorDeposits < REFERRAL_DEPOSIT_THRESHOLD) {
+      return NextResponse.json(
+        { error: "That sponsor isn't yet eligible to refer new members." },
         { status: 400 }
       );
     }

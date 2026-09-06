@@ -158,6 +158,7 @@ export function DashboardView({ memberId }: { memberId: string }) {
           rows={[
             { label: "User ID", value: memberId },
             { label: "Rank", value: wallet.rank },
+            { label: "Fund Wallet", value: `$${wallet.availableFund.toFixed(2)}` },
             { label: "Total Self Investment", value: `$${wallet.totalSelfInvestment.toFixed(2)}` },
             { label: "Total Income", value: `$${wallet.totalIncome.toFixed(2)}` },
             { label: "Total Withdrawal", value: `$${wallet.totalIncomeWithdrawal.toFixed(2)}` },
@@ -198,17 +199,6 @@ export function DashboardView({ memberId }: { memberId: string }) {
             </div>
           );
         })}
-
-        <div className="flex items-center justify-between gap-3 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
-              Thailand Tour Status
-            </p>
-            <span className="mt-2 inline-block rounded-full bg-brand-gold/15 px-3 py-1 text-xs font-semibold text-brand-gold">
-              Pending
-            </span>
-          </div>
-        </div>
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white p-2 shadow-sm">

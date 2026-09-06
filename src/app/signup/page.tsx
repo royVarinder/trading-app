@@ -95,11 +95,14 @@ export default function SignupPage() {
             type="text"
             name="sponsorId"
             placeholder="Sponsor ID"
-            className="input-pill w-full px-5 pl-11"
+            readOnly={Boolean(referredBy)}
+            className={`input-pill w-full px-5 pl-11 ${referredBy ? "cursor-not-allowed bg-gray-50 text-gray-500" : ""}`}
           />
         </div>
         {referredBy && (
-          <p className="-mt-2 pl-1 text-xs font-medium text-emerald-600">Referred by {referredBy}</p>
+          <p className="-mt-2 pl-1 text-xs font-medium text-emerald-600">
+            Referred by {referredBy} — sponsor ID is locked.
+          </p>
         )}
 
         <div className="relative">

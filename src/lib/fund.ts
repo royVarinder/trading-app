@@ -1,6 +1,15 @@
 import type { Db } from "mongodb";
 import { sumField } from "@/lib/aggregate";
 
+// Lifetime total of a member's *approved* deposits — the basis for the
+// $50-to-refer eligibility check (see REFERRAL_DEPOSIT_THRESHOLD). Unlike
+// getAvailableFund below, this is never reduced by investments/stakes/
+// withdrawals — once a member has funded $50+, they stay eligible to refer.
+export async function getTotalApprovedDeposits(db: Db, memberId: string): Promise<number> {
+  const deposited = await sumField(db, "deposits", { memberId, status: "Approved" }, "amount");
+  return Math.round(deposited * 100) / 100;
+}
+
 export async function getAvailableFund(db: Db, memberId: string): Promise<number> {
   const [deposited, invested, staked, adjustments] = await Promise.all([
     sumField(db, "deposits", { memberId, status: "Approved" }, "amount"),
