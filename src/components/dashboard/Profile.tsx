@@ -5,6 +5,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { PageHeader } from "@/components/dashboard/shared/PageHeader";
 import { InfoCard } from "@/components/dashboard/shared/InfoCard";
 import { CardSkeleton } from "@/components/dashboard/shared/Skeleton";
+import { CheckIcon, CopyIcon } from "@/components/icons";
 import { COUNTRY_CODES } from "@/lib/countryCodes";
 
 type ProfileData = {
@@ -220,14 +221,20 @@ export function Profile() {
             <p className="mt-1 text-xs text-[color:var(--fincept-text-muted)]">
               Share this link — anyone who signs up through it is added under you as their sponsor.
             </p>
-            <button
-              type="button"
-              onClick={copyReferralLink}
-              className="mt-3 w-full truncate rounded-xl bg-[color:var(--fincept-bg-soft)] px-3 py-2.5 text-left font-mono text-xs text-[color:var(--fincept-text-muted)] transition hover:bg-white/5"
-              title="Click to copy"
-            >
-              {copied ? "Copied to clipboard!" : referralLink}
-            </button>
+            <div className="mt-3 flex items-center gap-2">
+              <p className="min-w-0 flex-1 truncate rounded-xl bg-[color:var(--fincept-bg-soft)] px-3 py-2.5 text-left font-mono text-xs text-[color:var(--fincept-text-muted)]">
+                {copied ? "Copied to clipboard!" : referralLink}
+              </p>
+              <button
+                type="button"
+                onClick={copyReferralLink}
+                aria-label={copied ? "Link copied" : "Copy referral link"}
+                title={copied ? "Copied!" : "Copy referral link"}
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-bg-soft)] text-[color:var(--fincept-text-muted)] transition hover:border-[color:var(--fincept-green)] hover:text-[color:var(--fincept-text)]"
+              >
+                {copied ? <CheckIcon className="h-4 w-4 text-emerald-300" /> : <CopyIcon className="h-4 w-4" />}
+              </button>
+            </div>
           </div>
         ) : (
           <div className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-5 shadow-sm">

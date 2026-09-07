@@ -23,7 +23,7 @@ export const DEFAULT_SETTINGS: PlatformSettings = {
   startupPlan: { ...DEFAULT_STARTUP_PLAN },
   stakingTiers: DEFAULT_STAKING_TIERS,
   leadershipRanks: DEFAULT_LEADERSHIP_RANKS,
-  depositWalletAddress: "0xDEM0A11cCB185545aC41CA8C2772DB579946F6",
+  depositWalletAddress: "0xDDC09476D30Fae1B08fC68fe7F65949a1B648954",
   withdrawalMin: 10,
   withdrawalAdminChargeRate: 0.05,
 };

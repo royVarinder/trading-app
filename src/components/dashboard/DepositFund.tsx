@@ -3,8 +3,9 @@
 import Image from "next/image";
 import { useEffect, useState, type FormEvent } from "react";
 import { PageHeader } from "@/components/dashboard/shared/PageHeader";
+import { CheckIcon, CopyIcon } from "@/components/icons";
 
-const FALLBACK_WALLET_ADDRESS = "0xDEM0A11cCB185545aC41CA8C2772DB579946F6";
+const FALLBACK_WALLET_ADDRESS = "0xDDC09476D30Fae1B08fC68fe7F65949a1B648954";
 const MIN_DEPOSIT_AMOUNT = 50;
 
 export function DepositFund() {
@@ -88,19 +89,25 @@ export function DepositFund() {
           Scan QR Code
         </p>
         <div className="mt-4 flex justify-center">
-          <Image src="/dummy-qr.svg" alt="Deposit QR code" width={160} height={160} className="rounded-xl" />
+          <Image src="/original-qr.jpeg" alt="Deposit QR code" width={160} height={160} className="rounded-xl" />
         </div>
         <p className="mt-4 text-center text-xs font-semibold uppercase tracking-wide text-[color:var(--fincept-text-muted)]">
           USDT.BEP20
         </p>
-        <button
-          type="button"
-          onClick={copyAddress}
-          className="mt-2 w-full truncate rounded-xl bg-[color:var(--fincept-bg-soft)] px-3 py-2.5 text-center font-mono text-xs text-[color:var(--fincept-text-muted)] transition hover:bg-white/5"
-          title="Click to copy"
-        >
-          {copied ? "Copied to clipboard!" : walletAddress}
-        </button>
+        <div className="mt-2 flex items-center gap-2">
+          <p className="min-w-0 flex-1 truncate rounded-xl bg-[color:var(--fincept-bg-soft)] px-3 py-2.5 text-center font-mono text-xs text-[color:var(--fincept-text-muted)]">
+            {copied ? "Copied to clipboard!" : walletAddress}
+          </p>
+          <button
+            type="button"
+            onClick={copyAddress}
+            aria-label={copied ? "Address copied" : "Copy address"}
+            title={copied ? "Copied!" : "Copy address"}
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-bg-soft)] text-[color:var(--fincept-text-muted)] transition hover:border-[color:var(--fincept-green)] hover:text-[color:var(--fincept-text)]"
+          >
+            {copied ? <CheckIcon className="h-4 w-4 text-emerald-300" /> : <CopyIcon className="h-4 w-4" />}
+          </button>
+        </div>
       </div>
 
       <div className="max-w-2xl rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-6 shadow-sm">
