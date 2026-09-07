@@ -57,7 +57,7 @@ export function IncomeAllBonus({ memberId }: { memberId: string }) {
       {entries === null && !error ? (
         <TableSkeleton columns={7} rows={3} />
       ) : error ? (
-        <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+        <p className="rounded-2xl border border-red-100 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-300">
           {error}
         </p>
       ) : (

@@ -58,7 +58,7 @@ const FOREX_CROSS_RATES_CONFIG = {
   height: 400,
   currencies: ["EUR", "USD", "JPY", "GBP", "CHF", "AUD", "CAD", "NZD"],
   isTransparent: true,
-  colorTheme: "light",
+  colorTheme: "dark",
   locale: "en",
 };
 
@@ -130,8 +130,8 @@ export function DashboardView({ memberId }: { memberId: string }) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-[#1f2430]">Dashboard</h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <h1 className="text-xl font-bold text-[color:var(--fincept-text)]">Dashboard</h1>
+        <p className="mt-1 text-sm text-[color:var(--fincept-text-muted)]">
           Welcome back — here&apos;s a snapshot of your account today.
         </p>
       </div>
@@ -162,7 +162,7 @@ export function DashboardView({ memberId }: { memberId: string }) {
             { label: "Total Self Investment", value: `$${wallet.totalSelfInvestment.toFixed(2)}` },
             { label: "Total Income", value: `$${wallet.totalIncome.toFixed(2)}` },
             { label: "Total Withdrawal", value: `$${wallet.totalIncomeWithdrawal.toFixed(2)}` },
-            { label: "Net Income", value: `$${wallet.netIncome.toFixed(2)}`, valueClassName: "text-emerald-600" },
+            { label: "Net Income", value: `$${wallet.netIncome.toFixed(2)}`, valueClassName: "text-emerald-300" },
           ]}
         />
         <InfoCard
@@ -185,13 +185,13 @@ export function DashboardView({ memberId }: { memberId: string }) {
           return (
             <div
               key={stat.label}
-              className="flex items-center justify-between gap-3 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm"
+              className="flex items-center justify-between gap-3 rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-5 shadow-sm"
             >
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
+                <p className="text-xs font-medium uppercase tracking-wide text-[color:var(--fincept-text-muted)]">
                   {stat.label}
                 </p>
-                <p className="mt-2 text-xl font-bold text-[#1f2430]">{stat.value}</p>
+                <p className="mt-2 text-xl font-bold text-[color:var(--fincept-text)]">{stat.value}</p>
               </div>
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-purple to-brand-purple-light text-white">
                 <Icon className="h-5 w-5" />
@@ -201,7 +201,7 @@ export function DashboardView({ memberId }: { memberId: string }) {
         })}
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white p-2 shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-2 shadow-sm">
         <TradingViewWidget
           scriptSrc="https://s3.tradingview.com/external-embedding/embed-widget-forex-cross-rates.js"
           config={FOREX_CROSS_RATES_CONFIG}

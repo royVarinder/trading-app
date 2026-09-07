@@ -46,7 +46,7 @@ export default function ForgotPasswordPage() {
       footer={
         <span>
           Remembered it?{" "}
-          <Link href="/login" className="font-semibold text-brand-purple hover:underline">
+          <Link href="/login" className="font-semibold text-[color:var(--fincept-green-light)] hover:underline">
             Sign in
           </Link>
         </span>
@@ -54,26 +54,26 @@ export default function ForgotPasswordPage() {
     >
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div className="relative">
-          <MailIcon className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <MailIcon className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[color:var(--fincept-text-muted)]" />
           <input
             type="text"
             name="identifier"
             placeholder="Member ID or Email Address"
-            className="input-pill w-full px-5 pl-11"
+            className="fincept-input w-full px-5 pl-11"
             required
           />
         </div>
 
         {error && (
-          <p className="rounded-xl bg-red-50 px-3 py-2 text-center text-xs font-medium text-red-600">{error}</p>
+          <p className="rounded-xl bg-red-500/10 px-3 py-2 text-center text-xs font-medium text-red-300">{error}</p>
         )}
         {message && (
-          <p className="rounded-xl bg-emerald-50 px-3 py-2 text-center text-xs font-medium text-emerald-600">
+          <p className="rounded-xl bg-emerald-500/10 px-3 py-2 text-center text-xs font-medium text-emerald-300">
             {message}
           </p>
         )}
 
-        <button type="submit" className="btn-brand mt-2 disabled:opacity-70" disabled={submitting}>
+        <button type="submit" className="fincept-btn mt-2 disabled:opacity-70" disabled={submitting}>
           {submitting ? "Sending..." : "Send Reset Link"}
         </button>
       </form>

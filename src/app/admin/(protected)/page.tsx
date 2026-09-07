@@ -75,7 +75,7 @@ export default function AdminDashboardPage() {
       <PageHeader title="Admin Dashboard" subtitle="Platform-wide overview and pending action queues." />
 
       {error && (
-        <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+        <p className="rounded-2xl border border-red-100 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-300">
           {error}
         </p>
       )}
@@ -93,10 +93,10 @@ export default function AdminDashboardPage() {
               <Link
                 key={c.label}
                 href={c.href}
-                className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:border-brand-purple-light hover:shadow-md"
+                className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-5 shadow-sm transition hover:border-brand-purple-light hover:shadow-md"
               >
-                <p className="text-xs font-medium uppercase tracking-wide text-gray-400">{c.label}</p>
-                <p className="mt-2 text-2xl font-bold text-[#1f2430]">{c.value}</p>
+                <p className="text-xs font-medium uppercase tracking-wide text-[color:var(--fincept-text-muted)]">{c.label}</p>
+                <p className="mt-2 text-2xl font-bold text-[color:var(--fincept-text)]">{c.value}</p>
                 <p className="mt-1 text-xs font-medium text-brand-purple">Review &rarr;</p>
               </Link>
             ))}
@@ -104,29 +104,29 @@ export default function AdminDashboardPage() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {totalsCards.map((c) => (
-              <div key={c.label} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-                <p className="text-xs font-medium uppercase tracking-wide text-gray-400">{c.label}</p>
-                <p className="mt-2 text-xl font-bold text-[#1f2430]">{c.value}</p>
+              <div key={c.label} className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-5 shadow-sm">
+                <p className="text-xs font-medium uppercase tracking-wide text-[color:var(--fincept-text-muted)]">{c.label}</p>
+                <p className="mt-2 text-xl font-bold text-[color:var(--fincept-text)]">{c.value}</p>
               </div>
             ))}
           </div>
 
-          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-            <h2 className="text-sm font-semibold text-[#1f2430]">Daily Accrual Engine</h2>
-            <p className="mt-2 text-sm text-gray-500">
+          <div className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-5 shadow-sm">
+            <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">Daily Accrual Engine</h2>
+            <p className="mt-2 text-sm text-[color:var(--fincept-text-muted)]">
               Last run:{" "}
-              <span className="font-semibold text-[#1f2430]">{overview.lastAccrualDate ?? "never"}</span> ·
+              <span className="font-semibold text-[color:var(--fincept-text)]">{overview.lastAccrualDate ?? "never"}</span> ·
               Last monthly reward month:{" "}
-              <span className="font-semibold text-[#1f2430]">{overview.lastRewardMonth ?? "never"}</span>
+              <span className="font-semibold text-[color:var(--fincept-text)]">{overview.lastRewardMonth ?? "never"}</span>
             </p>
-            <p className="mt-1 text-xs text-gray-400">
+            <p className="mt-1 text-xs text-[color:var(--fincept-text-muted)]">
               Runs automatically on every member dashboard visit. Use this only if you need to force it now.
             </p>
             <div className="mt-4 flex items-center gap-3">
               <button type="button" onClick={runAccrual} className="btn-solid disabled:opacity-70" disabled={running}>
                 {running ? "Running..." : "Run Accrual Now"}
               </button>
-              {ranMessage && <span className="text-sm font-medium text-emerald-600">{ranMessage}</span>}
+              {ranMessage && <span className="text-sm font-medium text-emerald-300">{ranMessage}</span>}
             </div>
           </div>
         </>

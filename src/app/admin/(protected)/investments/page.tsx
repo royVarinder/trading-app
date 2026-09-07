@@ -77,7 +77,7 @@ export default function AdminInvestmentsPage() {
       member: (
         <span>
           <span className="font-semibold">{p.memberId}</span>
-          <span className="block text-xs text-gray-400">{p.username}</span>
+          <span className="block text-xs text-[color:var(--fincept-text-muted)]">{p.username}</span>
         </span>
       ),
       amount: `$${p.amount.toFixed(2)}`,
@@ -115,7 +115,7 @@ export default function AdminInvestmentsPage() {
             type="button"
             onClick={() => setKind(k)}
             className={`rounded-full px-4 py-1.5 text-xs font-semibold capitalize transition ${
-              kind === k ? "bg-brand-purple text-white" : "bg-white text-gray-500 hover:bg-gray-100"
+              kind === k ? "bg-brand-purple text-white" : "bg-[color:var(--fincept-card)] text-[color:var(--fincept-text-muted)] hover:bg-white/5"
             }`}
           >
             {k === "investments" ? "Investment ID" : "Staking ID"}
@@ -124,7 +124,7 @@ export default function AdminInvestmentsPage() {
       </div>
 
       {error && (
-        <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+        <p className="rounded-2xl border border-red-100 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-300">
           {error}
         </p>
       )}

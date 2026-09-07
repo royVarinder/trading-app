@@ -42,7 +42,7 @@ export function TicketSubmit({ memberId }: { memberId: string }) {
   return (
     <div className="space-y-6">
       <PageHeader title="Ticket Submit" subtitle="Open a support ticket with our team." />
-      <div className="max-w-2xl rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+      <div className="max-w-2xl rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-6 shadow-sm">
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="field-label">User ID</label>
@@ -62,7 +62,7 @@ export function TicketSubmit({ memberId }: { memberId: string }) {
             />
           </div>
           {error && <p className="text-sm font-medium text-red-500">{error}</p>}
-          {saved && <p className="text-sm font-medium text-emerald-600">Ticket created successfully.</p>}
+          {saved && <p className="text-sm font-medium text-emerald-300">Ticket created successfully.</p>}
           <button type="submit" className="btn-solid disabled:opacity-70" disabled={submitting}>
             {submitting ? "Submitting..." : "Create Ticket"}
           </button>

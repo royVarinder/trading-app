@@ -77,7 +77,7 @@ export default function AdminSettingsPage() {
     return (
       <div className="space-y-6">
         <PageHeader title="Settings" subtitle="Plan rates, ranks, and platform configuration." />
-        <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+        <p className="rounded-2xl border border-red-100 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-300">
           {error}
         </p>
       </div>
@@ -114,13 +114,13 @@ export default function AdminSettingsPage() {
       <PageHeader title="Settings" subtitle="Plan rates, ranks, and platform configuration — takes effect immediately." />
 
       {forbidden && (
-        <p className="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-700">
+        <p className="rounded-2xl border border-amber-100 bg-amber-500/10 px-4 py-3 text-sm font-medium text-amber-700">
           Only super admins can edit settings. You can still view the current configuration below.
         </p>
       )}
 
-      <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-        <h2 className="text-sm font-semibold text-[#1f2430]">General</h2>
+      <div className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-6 shadow-sm">
+        <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">General</h2>
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
             <label className="field-label">Deposit Wallet Address</label>
@@ -154,8 +154,8 @@ export default function AdminSettingsPage() {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-        <h2 className="text-sm font-semibold text-[#1f2430]">Startup (Investment) Plan</h2>
+      <div className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-6 shadow-sm">
+        <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">Startup (Investment) Plan</h2>
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label className="field-label">Minimum ($)</label>
@@ -186,18 +186,18 @@ export default function AdminSettingsPage() {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-        <h2 className="text-sm font-semibold text-[#1f2430]">Staking Tiers</h2>
+      <div className="overflow-x-auto rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-6 shadow-sm">
+        <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">Staking Tiers</h2>
         <table className="mt-4 w-full min-w-[640px] text-left text-sm">
           <thead>
-            <tr className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            <tr className="text-xs font-semibold uppercase tracking-wide text-[color:var(--fincept-text-muted)]">
               <th className="px-2 py-2">Label</th>
               <th className="px-2 py-2">Min ($)</th>
               <th className="px-2 py-2">Daily Rate (%)</th>
               <th className="px-2 py-2">Duration (days)</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-[color:var(--fincept-border)]">
             {settings.stakingTiers.map((tier, i) => (
               <tr key={tier.id}>
                 <td className="px-2 py-2">
@@ -238,11 +238,11 @@ export default function AdminSettingsPage() {
         </table>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-        <h2 className="text-sm font-semibold text-[#1f2430]">Leadership Ranks</h2>
+      <div className="overflow-x-auto rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-6 shadow-sm">
+        <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">Leadership Ranks</h2>
         <table className="mt-4 w-full min-w-[860px] text-left text-sm">
           <thead>
-            <tr className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            <tr className="text-xs font-semibold uppercase tracking-wide text-[color:var(--fincept-text-muted)]">
               <th className="px-2 py-2">Rank</th>
               <th className="px-2 py-2">Commission (%)</th>
               <th className="px-2 py-2">Self Inv. ($)</th>
@@ -251,7 +251,7 @@ export default function AdminSettingsPage() {
               <th className="px-2 py-2">Monthly Reward ($)</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-[color:var(--fincept-border)]">
             {settings.leadershipRanks.map((rank, i) => (
               <tr key={rank.level}>
                 <td className="px-2 py-2">
@@ -311,7 +311,7 @@ export default function AdminSettingsPage() {
         <button type="button" className="btn-solid disabled:opacity-70" disabled={saving} onClick={save}>
           {saving ? "Saving..." : "Save Settings"}
         </button>
-        {saved && <span className="text-sm font-medium text-emerald-600">Settings saved.</span>}
+        {saved && <span className="text-sm font-medium text-emerald-300">Settings saved.</span>}
         {saveError && <span className="text-sm font-medium text-red-500">{saveError}</span>}
       </div>
     </div>

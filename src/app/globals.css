@@ -1,16 +1,38 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0c0c0d;
+  --foreground: #fafafa;
 
-  --brand-ink: #0b0b14;
-  --brand-ink-2: #14141f;
-  --brand-purple: #6d4aff;
-  --brand-purple-dark: #5a37f2;
-  --brand-purple-light: #8a63ff;
-  --brand-gold: #f5a623;
-  --brand-muted: #f2f2f5;
+  /* These names ("brand-purple" etc.) predate the Fincept theme adoption —
+     kept as-is since they're referenced by class name (bg-brand-purple,
+     text-brand-purple, ...) across the dashboard/admin screens. Their
+     *values* now point at the Fincept dark/green palette below so every
+     consumer re-themes automatically without touching each call site. */
+  --brand-ink: #0c0c0d;
+  --brand-ink-2: #141516;
+  --brand-purple: #539f75;
+  --brand-purple-dark: #3f7d5a;
+  --brand-purple-light: #9fcfb4;
+  --brand-gold: #43f993;
+  --brand-muted: #1e1f20;
+
+  /* Fincept theme — palette lifted from the reference template
+     (demo.templatemonster.com/demo/565722.html). Scoped to its own
+     `--fincept-*` namespace so it never touches the purple brand vars the
+     dashboard/admin screens already depend on. Used by the marketing
+     landing page (src/app/page.tsx) and the auth screens (AuthShell). */
+  --fincept-bg: #0c0c0d;
+  --fincept-bg-soft: #141516;
+  --fincept-card: #1e1f20;
+  --fincept-border: #304338;
+  --fincept-green: #539f75;
+  --fincept-green-light: #9fcfb4;
+  --fincept-green-bright: #43f993;
+  --fincept-green-muted: #708c7c;
+  --fincept-text: #fafafa;
+  --fincept-text-muted: #afb0b7;
+  --fincept-text-dim: #45474f;
 }
 
 @theme inline {
@@ -24,13 +46,20 @@
   --color-brand-gold: var(--brand-gold);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-fincept-bg: var(--fincept-bg);
+  --color-fincept-bg-soft: var(--fincept-bg-soft);
+  --color-fincept-card: var(--fincept-card);
+  --color-fincept-border: var(--fincept-border);
+  --color-fincept-green: var(--fincept-green);
+  --color-fincept-green-light: var(--fincept-green-light);
+  --color-fincept-green-bright: var(--fincept-green-bright);
+  --color-fincept-green-muted: var(--fincept-green-muted);
+  --color-fincept-text: var(--fincept-text);
+  --color-fincept-text-muted: var(--fincept-text-muted);
+  --color-fincept-text-dim: var(--fincept-text-dim);
+  --font-hanken: var(--font-hanken-grotesk);
+  --font-inter-fincept: var(--font-inter-raw);
 }
 
 body {
@@ -50,8 +79,8 @@ body {
 .mesh-bg {
   background-color: var(--brand-ink);
   background-image:
-    radial-gradient(circle at 15% 20%, rgba(109, 74, 255, 0.25), transparent 45%),
-    radial-gradient(circle at 85% 80%, rgba(245, 166, 35, 0.12), transparent 40%),
+    radial-gradient(circle at 15% 20%, rgba(83, 159, 117, 0.25), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(159, 207, 180, 0.12), transparent 40%),
     radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1.5px),
     radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1.5px);
   background-size:
@@ -92,19 +121,19 @@ body {
   background-color: var(--brand-muted);
   padding-block: 0.75rem;
   font-size: 0.875rem;
-  color: #1f2430;
+  color: var(--fincept-text);
   outline: none;
-  border: 1px solid transparent;
+  border: 1px solid var(--fincept-border);
   transition: box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .input-pill::placeholder {
-  color: #9aa0ac;
+  color: var(--fincept-text-muted);
 }
 
 .input-pill:focus {
   border-color: var(--brand-purple-light);
-  box-shadow: 0 0 0 3px rgba(109, 74, 255, 0.18);
+  box-shadow: 0 0 0 3px rgba(83, 159, 117, 0.18);
 }
 
 .btn-brand {
@@ -114,8 +143,8 @@ body {
   padding: 0.8rem 1.25rem;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #ffffff;
-  box-shadow: 0 12px 24px -12px rgba(109, 74, 255, 0.65);
+  color: #0c0c0d;
+  box-shadow: 0 12px 24px -12px rgba(83, 159, 117, 0.65);
   transition: filter 0.15s ease, transform 0.05s ease;
 }
 
@@ -130,27 +159,27 @@ body {
 .field-input {
   width: 100%;
   border-radius: 0.75rem;
-  background-color: #f8f9fb;
-  border: 1px solid #e5e7eb;
+  background-color: var(--fincept-bg-soft);
+  border: 1px solid var(--fincept-border);
   padding: 0.65rem 1rem;
   font-size: 0.875rem;
-  color: #1f2430;
+  color: var(--fincept-text);
   outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .field-input::placeholder {
-  color: #9aa0ac;
+  color: var(--fincept-text-muted);
 }
 
 .field-input:focus {
   border-color: var(--brand-purple-light);
-  box-shadow: 0 0 0 3px rgba(109, 74, 255, 0.15);
+  box-shadow: 0 0 0 3px rgba(83, 159, 117, 0.18);
 }
 
 .field-input:disabled {
-  background-color: #f1f2f5;
-  color: #9aa0ac;
+  background-color: rgba(255, 255, 255, 0.04);
+  color: var(--fincept-text-dim);
   cursor: not-allowed;
 }
 
@@ -159,7 +188,7 @@ body {
   margin-bottom: 0.375rem;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #4b5563;
+  color: var(--fincept-text-muted);
 }
 
 .btn-solid {
@@ -168,7 +197,7 @@ body {
   padding: 0.65rem 1.25rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #ffffff;
+  color: #0c0c0d;
   transition: filter 0.15s ease;
 }
 
@@ -183,14 +212,141 @@ body {
 
 .btn-outline {
   border-radius: 0.75rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--fincept-border);
   padding: 0.65rem 1.25rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--fincept-text-muted);
   transition: background-color 0.15s ease;
 }
 
 .btn-outline:hover {
-  background-color: #f8f9fb;
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* -------------------------------------------------------------------------
+   Fincept theme utilities
+   Used by the marketing landing page and the auth screens (AuthShell +
+   login/signup/forgot-password/reset-password). Kept separate from the
+   .btn-brand / .input-pill / .mesh-bg classes above so the existing
+   dashboard and admin screens are untouched.
+------------------------------------------------------------------------- */
+
+.fincept {
+  font-family: var(--font-inter-fincept), sans-serif;
+  color: var(--fincept-text);
+  background-color: var(--fincept-bg);
+}
+
+.fincept h1,
+.fincept h2,
+.fincept h3,
+.fincept h4,
+.fincept h5,
+.fincept h6 {
+  font-family: var(--font-hanken), sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.fincept-gradient-text {
+  background: linear-gradient(90deg, var(--fincept-green-light), var(--fincept-green));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.fincept-bg-image {
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(83, 159, 117, 0.16), transparent 40%),
+    radial-gradient(circle at 88% 30%, rgba(159, 207, 180, 0.12), transparent 38%),
+    url("/fincept/media/images/body-bg.png");
+  background-size: cover;
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-color: var(--fincept-bg);
+}
+
+/* Pill CTA button — solid light-green fill, dark text (matches the
+   template's .cus-btn-2 hero button). */
+.fincept-btn {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: var(--fincept-green-light);
+  padding: 0.85rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0c0c0d;
+  transition: filter 0.15s ease, transform 0.05s ease;
+}
+
+.fincept-btn:hover {
+  filter: brightness(1.08);
+}
+
+.fincept-btn:active {
+  transform: scale(0.99);
+}
+
+.fincept-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Outline pill CTA — transparent with a light border (matches the
+   template's .cus-btn header/nav button). */
+.fincept-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid var(--fincept-border);
+  padding: 0.7rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--fincept-text);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.fincept-btn-outline:hover {
+  border-color: var(--fincept-green);
+  background-color: rgba(83, 159, 117, 0.08);
+}
+
+.fincept-input {
+  border-radius: 9999px;
+  background-color: var(--fincept-bg-soft);
+  border: 1px solid var(--fincept-border);
+  padding-block: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--fincept-text);
+  outline: none;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.fincept-input::placeholder {
+  color: var(--fincept-text-muted);
+}
+
+.fincept-input:focus {
+  border-color: var(--fincept-green);
+  box-shadow: 0 0 0 3px rgba(83, 159, 117, 0.22);
+}
+
+.fincept-card {
+  background-color: var(--fincept-card);
+  border: 1px solid var(--fincept-border);
+  border-radius: 1.5rem;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }

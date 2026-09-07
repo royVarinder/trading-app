@@ -39,7 +39,7 @@ export default function AdminLedgerPage() {
     return (
       <div className="space-y-6">
         <PageHeader title="Ledger" subtitle="Platform-wide bonus, commission, and reward payouts." />
-        <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+        <p className="rounded-2xl border border-red-100 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-300">
           {error}
         </p>
       </div>
@@ -64,17 +64,17 @@ export default function AdminLedgerPage() {
       <PageHeader title="Ledger" subtitle="Platform-wide bonus, commission, and reward payouts." />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-400">Total Trading Bonus Paid</p>
-          <p className="mt-2 text-xl font-bold text-[#1f2430]">${data.totals.totalBonus.toFixed(2)}</p>
+        <div className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-5 shadow-sm">
+          <p className="text-xs font-medium uppercase tracking-wide text-[color:var(--fincept-text-muted)]">Total Trading Bonus Paid</p>
+          <p className="mt-2 text-xl font-bold text-[color:var(--fincept-text)]">${data.totals.totalBonus.toFixed(2)}</p>
         </div>
-        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-400">Total Leadership Commission</p>
-          <p className="mt-2 text-xl font-bold text-[#1f2430]">${data.totals.totalLeadership.toFixed(2)}</p>
+        <div className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-5 shadow-sm">
+          <p className="text-xs font-medium uppercase tracking-wide text-[color:var(--fincept-text-muted)]">Total Leadership Commission</p>
+          <p className="mt-2 text-xl font-bold text-[color:var(--fincept-text)]">${data.totals.totalLeadership.toFixed(2)}</p>
         </div>
-        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-400">Total Monthly Rewards</p>
-          <p className="mt-2 text-xl font-bold text-[#1f2430]">${data.totals.totalReward.toFixed(2)}</p>
+        <div className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-5 shadow-sm">
+          <p className="text-xs font-medium uppercase tracking-wide text-[color:var(--fincept-text-muted)]">Total Monthly Rewards</p>
+          <p className="mt-2 text-xl font-bold text-[color:var(--fincept-text)]">${data.totals.totalReward.toFixed(2)}</p>
         </div>
       </div>
 
@@ -90,7 +90,7 @@ export default function AdminLedgerPage() {
             type="button"
             onClick={() => setTab(t)}
             className={`rounded-full px-4 py-1.5 text-xs font-semibold capitalize transition ${
-              tab === t ? "bg-brand-purple text-white" : "bg-white text-gray-500 hover:bg-gray-100"
+              tab === t ? "bg-brand-purple text-white" : "bg-[color:var(--fincept-card)] text-[color:var(--fincept-text-muted)] hover:bg-white/5"
             }`}
           >
             {t}

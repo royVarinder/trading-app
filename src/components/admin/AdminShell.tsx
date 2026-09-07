@@ -53,7 +53,7 @@ export function AdminShell({
   }
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-gray-50">
+    <div className="fincept flex h-screen w-full overflow-hidden bg-[color:var(--fincept-bg)]">
       {mobileNavOpen && (
         <div
           className="fixed inset-0 z-30 bg-black/50 lg:hidden"
@@ -77,7 +77,7 @@ export function AdminShell({
               type="button"
               onClick={() => setMobileNavOpen(false)}
               aria-label="Close menu"
-              className="rounded-lg p-1.5 text-gray-300 hover:bg-white/5 hover:text-white lg:hidden"
+              className="rounded-lg p-1.5 text-[color:var(--fincept-text-muted)] hover:bg-white/5 hover:text-white lg:hidden"
             >
               <CloseIcon className="h-5 w-5" />
             </button>
@@ -95,7 +95,7 @@ export function AdminShell({
                   className={`flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition ${
                     isActive
                       ? "bg-gradient-to-r from-brand-purple to-brand-purple-light text-white shadow-lg shadow-brand-purple/30"
-                      : "text-gray-300 hover:bg-white/5 hover:text-white"
+                      : "text-[color:var(--fincept-text-muted)] hover:bg-white/5 hover:text-white"
                   }`}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
@@ -113,7 +113,7 @@ export function AdminShell({
             </span>
             <span className="min-w-0 flex-1">
               <span className="block truncate text-sm font-medium text-white">{username}</span>
-              <span className="block truncate text-xs capitalize text-gray-400">{role.replace("_", " ")}</span>
+              <span className="block truncate text-xs capitalize text-[color:var(--fincept-text-muted)]">{role.replace("_", " ")}</span>
             </span>
           </div>
           <button
@@ -128,17 +128,17 @@ export function AdminShell({
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex items-center gap-3 border-b border-gray-100 bg-white px-4 py-3 lg:hidden">
+        <div className="flex items-center gap-3 border-b border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] px-4 py-3 lg:hidden">
           <button
             type="button"
             onClick={() => setMobileNavOpen(true)}
             aria-label="Open menu"
-            className="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100"
+            className="rounded-lg p-1.5 text-[color:var(--fincept-text-muted)] hover:bg-white/5"
           >
             <MenuIcon className="h-6 w-6" />
           </button>
           <Image src="/primeLogo.png" alt="PRIMEFX" width={28} height={28} className="rounded-lg" />
-          <span className="text-sm font-bold tracking-wide text-[#1f2430]">PRIMEFX Admin</span>
+          <span className="text-sm font-bold tracking-wide text-[color:var(--fincept-text)]">PRIMEFX Admin</span>
         </div>
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">{children}</main>
       </div>

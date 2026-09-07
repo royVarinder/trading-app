@@ -72,14 +72,14 @@ export function InvestmentWithdraw() {
           rows={[
             { label: "Total Wallet", value: `$${wallet.totalSelfInvestment.toFixed(2)}` },
             { label: "Total Withdrawal Income", value: `$${wallet.totalCapitalWithdrawal.toFixed(2)}` },
-            { label: "Net Wallet Income", value: `$${wallet.netCapital.toFixed(2)}`, valueClassName: "text-emerald-600" },
+            { label: "Net Wallet Income", value: `$${wallet.netCapital.toFixed(2)}`, valueClassName: "text-emerald-300" },
           ]}
           footer={
             <div className="flex items-center gap-3">
               <button type="button" onClick={claimWallet} className="btn-solid disabled:opacity-70" disabled={submitting}>
                 {submitting ? "Claiming..." : "Claim Wallet"}
               </button>
-              {claimed && <span className="text-sm font-medium text-emerald-600">Claim submitted — pending admin review.</span>}
+              {claimed && <span className="text-sm font-medium text-emerald-300">Claim submitted — pending admin review.</span>}
               {error && <span className="text-sm font-medium text-red-500">{error}</span>}
             </div>
           }

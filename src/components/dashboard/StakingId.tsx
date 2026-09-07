@@ -72,7 +72,7 @@ export function StakingId({ memberId }: { memberId: string }) {
     <div className="space-y-6">
       <PageHeader title="Staking ID" subtitle="Lock funds into a staking plan for a fixed term." />
 
-      <div className="max-w-2xl rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+      <div className="max-w-2xl rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-6 shadow-sm">
         <form className="grid grid-cols-1 gap-4 sm:grid-cols-2" onSubmit={handleSubmit}>
           <div>
             <label className="field-label">User Id</label>
@@ -127,7 +127,7 @@ export function StakingId({ memberId }: { memberId: string }) {
             <button type="reset" className="btn-outline" disabled={submitting}>
               Reset
             </button>
-            {saved && <span className="text-sm font-medium text-emerald-600">Staking plan created.</span>}
+            {saved && <span className="text-sm font-medium text-emerald-300">Staking plan created.</span>}
           </div>
           {error && <p className="text-sm font-medium text-red-500 sm:col-span-2">{error}</p>}
         </form>

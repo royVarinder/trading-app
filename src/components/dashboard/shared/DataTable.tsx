@@ -12,10 +12,10 @@ export function DataTable({
   emptyMessage?: string;
 }) {
   return (
-    <div className="overflow-x-auto rounded-2xl border border-gray-100 bg-white shadow-sm">
+    <div className="overflow-x-auto rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] shadow-sm">
       <table className="w-full min-w-[640px] text-left text-sm">
         <thead>
-          <tr className="border-b border-gray-100 bg-gray-50/60 text-xs font-semibold uppercase tracking-wide text-gray-500">
+          <tr className="border-b border-[color:var(--fincept-border)] bg-white/[0.03] text-xs font-semibold uppercase tracking-wide text-[color:var(--fincept-text-muted)]">
             {columns.map((c) => (
               <th key={c.key} className={`px-4 py-3 ${c.align === "right" ? "text-right" : "text-left"}`}>
                 {c.label}
@@ -23,20 +23,20 @@ export function DataTable({
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-100">
+        <tbody className="divide-y divide-[color:var(--fincept-border)]">
           {rows.length === 0 ? (
             <tr>
-              <td colSpan={columns.length} className="px-4 py-8 text-center text-sm text-gray-400">
+              <td colSpan={columns.length} className="px-4 py-8 text-center text-sm text-[color:var(--fincept-text-muted)]">
                 {emptyMessage}
               </td>
             </tr>
           ) : (
             rows.map((row, i) => (
-              <tr key={i} className="hover:bg-gray-50/60">
+              <tr key={i} className="hover:bg-white/[0.03]">
                 {columns.map((c) => (
                   <td
                     key={c.key}
-                    className={`px-4 py-3 text-gray-700 ${c.align === "right" ? "text-right" : "text-left"}`}
+                    className={`px-4 py-3 text-[color:var(--fincept-text)] ${c.align === "right" ? "text-right" : "text-left"}`}
                   >
                     {row[c.key]}
                   </td>

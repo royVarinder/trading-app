@@ -65,7 +65,7 @@ export function WalletAddress() {
   return (
     <div className="space-y-6">
       <PageHeader title="Edit Wallet Address" subtitle="Used for future withdrawals." />
-      <div className="max-w-xl rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+      <div className="max-w-xl rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-6 shadow-sm">
         {loadError ? (
           <p className="text-sm font-medium text-red-500">{loadError}</p>
         ) : (
@@ -89,7 +89,7 @@ export function WalletAddress() {
               <button type="submit" className="btn-solid disabled:opacity-70" disabled={saving}>
                 {saving ? "Saving..." : "Save Wallet Details"}
               </button>
-              {saved && <span className="text-sm font-medium text-emerald-600">Wallet address saved.</span>}
+              {saved && <span className="text-sm font-medium text-emerald-300">Wallet address saved.</span>}
             </div>
           </form>
         )}

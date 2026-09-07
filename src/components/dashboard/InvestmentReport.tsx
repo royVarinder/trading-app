@@ -53,7 +53,7 @@ export function InvestmentReport({ memberId }: { memberId: string }) {
       {investments === null && !error ? (
         <TableSkeleton columns={5} rows={2} />
       ) : error ? (
-        <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+        <p className="rounded-2xl border border-red-100 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-300">
           {error}
         </p>
       ) : (

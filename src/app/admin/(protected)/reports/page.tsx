@@ -24,7 +24,7 @@ export default function AdminReportsPage() {
     <div className="space-y-6">
       <PageHeader title="Reports" subtitle="Export platform activity by date range." />
 
-      <div className="flex flex-wrap items-end gap-4 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+      <div className="flex flex-wrap items-end gap-4 rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-6 shadow-sm">
         <div>
           <label className="field-label" htmlFor="from">
             From
@@ -37,13 +37,13 @@ export default function AdminReportsPage() {
           </label>
           <input id="to" type="date" value={to} onChange={(e) => setTo(e.target.value)} className="field-input" />
         </div>
-        <p className="text-xs text-gray-400">Leave both blank to export everything on record.</p>
+        <p className="text-xs text-[color:var(--fincept-text-muted)]">Leave both blank to export everything on record.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {REPORTS.map((r) => (
-          <div key={r.type} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-            <h2 className="text-sm font-semibold text-[#1f2430]">{r.label}</h2>
+          <div key={r.type} className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-5 shadow-sm">
+            <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">{r.label}</h2>
             <div className="mt-4 flex gap-3">
               <a href={urlFor(r.type, "csv")} className="btn-solid" download>
                 Download CSV

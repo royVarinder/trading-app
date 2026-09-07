@@ -104,7 +104,7 @@ export default function AdminMemberDetailPage({ params }: { params: Promise<{ me
     return (
       <div className="space-y-6">
         <PageHeader title="Member" subtitle={memberId} />
-        <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+        <p className="rounded-2xl border border-red-100 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-300">
           {error}
         </p>
       </div>
@@ -164,8 +164,8 @@ export default function AdminMemberDetailPage({ params }: { params: Promise<{ me
             { label: "Rank", value: wallet.rank },
             { label: "Total Self Investment", value: `$${wallet.totalSelfInvestment.toFixed(2)}` },
             { label: "Total Income", value: `$${wallet.totalIncome.toFixed(2)}` },
-            { label: "Net Income (withdrawable)", value: `$${wallet.netIncome.toFixed(2)}`, valueClassName: "text-emerald-600" },
-            { label: "Net Capital (withdrawable)", value: `$${wallet.netCapital.toFixed(2)}`, valueClassName: "text-emerald-600" },
+            { label: "Net Income (withdrawable)", value: `$${wallet.netIncome.toFixed(2)}`, valueClassName: "text-emerald-300" },
+            { label: "Net Capital (withdrawable)", value: `$${wallet.netCapital.toFixed(2)}`, valueClassName: "text-emerald-300" },
             { label: "Available Fund", value: `$${wallet.availableFund.toFixed(2)}` },
           ]}
         />
@@ -181,9 +181,9 @@ export default function AdminMemberDetailPage({ params }: { params: Promise<{ me
         />
       </div>
 
-      <div className="max-w-xl rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-        <h2 className="text-sm font-semibold text-[#1f2430]">Adjust Available Fund</h2>
-        <p className="mt-1 text-xs text-gray-500">
+      <div className="max-w-xl rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-6 shadow-sm">
+        <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">Adjust Available Fund</h2>
+        <p className="mt-1 text-xs text-[color:var(--fincept-text-muted)]">
           Manually credit or debit this member&apos;s available fund balance (dispute resolution). Logged to the audit
           trail.
         </p>
@@ -204,7 +204,7 @@ export default function AdminMemberDetailPage({ params }: { params: Promise<{ me
             <button type="submit" className="btn-solid disabled:opacity-70" disabled={adjusting}>
               {adjusting ? "Applying..." : "Apply Adjustment"}
             </button>
-            {adjustSaved && <span className="text-sm font-medium text-emerald-600">Adjustment applied.</span>}
+            {adjustSaved && <span className="text-sm font-medium text-emerald-300">Adjustment applied.</span>}
           </div>
           {adjustError && <p className="text-sm font-medium text-red-500 sm:col-span-2">{adjustError}</p>}
         </form>
@@ -212,7 +212,7 @@ export default function AdminMemberDetailPage({ params }: { params: Promise<{ me
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         <div className="space-y-2">
-          <h2 className="text-sm font-semibold text-[#1f2430]">Recent Deposits</h2>
+          <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">Recent Deposits</h2>
           <DataTable
             columns={[
               { key: "amount", label: "Amount" },
@@ -229,7 +229,7 @@ export default function AdminMemberDetailPage({ params }: { params: Promise<{ me
         </div>
 
         <div className="space-y-2">
-          <h2 className="text-sm font-semibold text-[#1f2430]">Recent Withdrawals</h2>
+          <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">Recent Withdrawals</h2>
           <DataTable
             columns={[
               { key: "type", label: "Type" },
@@ -248,7 +248,7 @@ export default function AdminMemberDetailPage({ params }: { params: Promise<{ me
         </div>
 
         <div className="space-y-2">
-          <h2 className="text-sm font-semibold text-[#1f2430]">Investment Positions</h2>
+          <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">Investment Positions</h2>
           <DataTable
             columns={[
               { key: "amount", label: "Amount" },
@@ -265,7 +265,7 @@ export default function AdminMemberDetailPage({ params }: { params: Promise<{ me
         </div>
 
         <div className="space-y-2">
-          <h2 className="text-sm font-semibold text-[#1f2430]">Staking Positions</h2>
+          <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">Staking Positions</h2>
           <DataTable
             columns={[
               { key: "tier", label: "Tier" },

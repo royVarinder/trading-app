@@ -93,7 +93,7 @@ export default function AdminTicketsPage() {
             type="button"
             onClick={() => setTab(t)}
             className={`rounded-full px-4 py-1.5 text-xs font-semibold transition ${
-              tab === t ? "bg-brand-purple text-white" : "bg-white text-gray-500 hover:bg-gray-100"
+              tab === t ? "bg-brand-purple text-white" : "bg-[color:var(--fincept-card)] text-[color:var(--fincept-text-muted)] hover:bg-white/5"
             }`}
           >
             {t}
@@ -102,7 +102,7 @@ export default function AdminTicketsPage() {
       </div>
 
       {error && (
-        <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+        <p className="rounded-2xl border border-red-100 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-300">
           {error}
         </p>
       )}
@@ -115,27 +115,27 @@ export default function AdminTicketsPage() {
           </div>
         )
       ) : tickets.length === 0 ? (
-        <p className="rounded-2xl border border-gray-100 bg-white px-4 py-8 text-center text-sm text-gray-400">
+        <p className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] px-4 py-8 text-center text-sm text-[color:var(--fincept-text-muted)]">
           No tickets in this view.
         </p>
       ) : (
         <div className="space-y-4">
           {tickets.map((t) => (
-            <div key={t.id} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+            <div key={t.id} className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-5 shadow-sm">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <span className="font-semibold text-[#1f2430]">{t.memberId}</span>
-                  <span className="ml-2 text-xs text-gray-400">{t.username}</span>
+                  <span className="font-semibold text-[color:var(--fincept-text)]">{t.memberId}</span>
+                  <span className="ml-2 text-xs text-[color:var(--fincept-text-muted)]">{t.username}</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-xs text-gray-400">{new Date(t.createdAt).toLocaleString()}</span>
+                  <span className="text-xs text-[color:var(--fincept-text-muted)]">{new Date(t.createdAt).toLocaleString()}</span>
                   <StatusBadge status={t.status} />
                 </div>
               </div>
-              <p className="mt-3 text-sm text-gray-700">{t.message}</p>
+              <p className="mt-3 text-sm text-[color:var(--fincept-text)]">{t.message}</p>
 
               {t.reply && (
-                <div className="mt-3 rounded-xl bg-brand-purple/5 px-4 py-3 text-sm text-gray-700">
+                <div className="mt-3 rounded-xl bg-brand-purple/5 px-4 py-3 text-sm text-[color:var(--fincept-text)]">
                   <span className="block text-xs font-semibold uppercase tracking-wide text-brand-purple">
                     Reply {t.repliedBy ? `by ${t.repliedBy}` : ""}
                   </span>

@@ -87,14 +87,14 @@ export default function AdminWithdrawalsPage() {
       member: (
         <span>
           <span className="font-semibold">{w.memberId}</span>
-          <span className="block text-xs text-gray-400">{w.username}</span>
+          <span className="block text-xs text-[color:var(--fincept-text-muted)]">{w.username}</span>
         </span>
       ),
       type: <span className="capitalize">{w.type}</span>,
       amount: (
         <span>
           ${w.amount.toFixed(2)}
-          <span className="block text-xs text-gray-400">net ${w.netAmount.toFixed(2)}</span>
+          <span className="block text-xs text-[color:var(--fincept-text-muted)]">net ${w.netAmount.toFixed(2)}</span>
         </span>
       ),
       date: new Date(w.createdAt).toLocaleString(),
@@ -102,7 +102,7 @@ export default function AdminWithdrawalsPage() {
         <span>
           <StatusBadge status={w.status} />
           {w.status === "Rejected" && w.rejectionReason && (
-            <span className="block text-xs text-gray-400">{w.rejectionReason}</span>
+            <span className="block text-xs text-[color:var(--fincept-text-muted)]">{w.rejectionReason}</span>
           )}
         </span>
       ),
@@ -119,7 +119,7 @@ export default function AdminWithdrawalsPage() {
               />
               <button
                 type="button"
-                className="text-xs font-semibold text-red-600 hover:underline disabled:opacity-50"
+                className="text-xs font-semibold text-red-300 hover:underline disabled:opacity-50"
                 disabled={busyId === w.id}
                 onClick={() => act(w.id, "reject", rejectReason)}
               >
@@ -127,7 +127,7 @@ export default function AdminWithdrawalsPage() {
               </button>
               <button
                 type="button"
-                className="text-xs font-semibold text-gray-400 hover:underline"
+                className="text-xs font-semibold text-[color:var(--fincept-text-muted)] hover:underline"
                 onClick={() => setRejectingId(null)}
               >
                 Cancel
@@ -137,7 +137,7 @@ export default function AdminWithdrawalsPage() {
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                className="text-xs font-semibold text-emerald-600 hover:underline disabled:opacity-50"
+                className="text-xs font-semibold text-emerald-300 hover:underline disabled:opacity-50"
                 disabled={busyId === w.id}
                 onClick={() => act(w.id, "approve")}
               >
@@ -145,7 +145,7 @@ export default function AdminWithdrawalsPage() {
               </button>
               <button
                 type="button"
-                className="text-xs font-semibold text-red-600 hover:underline disabled:opacity-50"
+                className="text-xs font-semibold text-red-300 hover:underline disabled:opacity-50"
                 disabled={busyId === w.id}
                 onClick={() => {
                   setRejectingId(w.id);
@@ -166,7 +166,7 @@ export default function AdminWithdrawalsPage() {
             Mark Paid
           </button>
         ) : (
-          <span className="text-xs text-gray-400">{w.reviewedBy ? `by ${w.reviewedBy}` : "—"}</span>
+          <span className="text-xs text-[color:var(--fincept-text-muted)]">{w.reviewedBy ? `by ${w.reviewedBy}` : "—"}</span>
         ),
     })) ?? [];
 
@@ -182,7 +182,7 @@ export default function AdminWithdrawalsPage() {
               type="button"
               onClick={() => setStatusTab(t)}
               className={`rounded-full px-4 py-1.5 text-xs font-semibold transition ${
-                statusTab === t ? "bg-brand-purple text-white" : "bg-white text-gray-500 hover:bg-gray-100"
+                statusTab === t ? "bg-brand-purple text-white" : "bg-[color:var(--fincept-card)] text-[color:var(--fincept-text-muted)] hover:bg-white/5"
               }`}
             >
               {t}
@@ -196,7 +196,7 @@ export default function AdminWithdrawalsPage() {
               type="button"
               onClick={() => setTypeTab(t)}
               className={`rounded-full px-4 py-1.5 text-xs font-semibold capitalize transition ${
-                typeTab === t ? "bg-brand-ink text-white" : "bg-white text-gray-500 hover:bg-gray-100"
+                typeTab === t ? "bg-brand-ink text-white" : "bg-[color:var(--fincept-card)] text-[color:var(--fincept-text-muted)] hover:bg-white/5"
               }`}
             >
               {t}
@@ -206,7 +206,7 @@ export default function AdminWithdrawalsPage() {
       </div>
 
       {error && (
-        <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+        <p className="rounded-2xl border border-red-100 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-300">
           {error}
         </p>
       )}

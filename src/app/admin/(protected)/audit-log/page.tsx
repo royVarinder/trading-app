@@ -32,7 +32,7 @@ export default function AdminAuditLogPage() {
       action: e.action,
       target: e.target ?? "—",
       details: e.details ? (
-        <span className="font-mono text-xs text-gray-500">{JSON.stringify(e.details)}</span>
+        <span className="font-mono text-xs text-[color:var(--fincept-text-muted)]">{JSON.stringify(e.details)}</span>
       ) : (
         "—"
       ),
@@ -43,7 +43,7 @@ export default function AdminAuditLogPage() {
       <PageHeader title="Audit Log" subtitle="Every admin action — approvals, rejections, edits — in one place." />
 
       {error && (
-        <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+        <p className="rounded-2xl border border-red-100 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-300">
           {error}
         </p>
       )}

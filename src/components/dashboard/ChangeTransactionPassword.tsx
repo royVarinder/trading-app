@@ -54,7 +54,7 @@ export function ChangeTransactionPassword() {
   return (
     <div className="space-y-6">
       <PageHeader title="Change Transaction Password" subtitle="Used to authorize withdrawals and investments." />
-      <div className="max-w-xl rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+      <div className="max-w-xl rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-6 shadow-sm">
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="field-label" htmlFor="currentTPassword">
@@ -76,7 +76,7 @@ export function ChangeTransactionPassword() {
           </div>
           {error && <p className="text-sm font-medium text-red-500">{error}</p>}
           {saved && (
-            <p className="text-sm font-medium text-emerald-600">Transaction password updated successfully.</p>
+            <p className="text-sm font-medium text-emerald-300">Transaction password updated successfully.</p>
           )}
           <div className="flex items-center gap-3">
             <button type="submit" className="btn-solid disabled:opacity-70" disabled={submitting}>

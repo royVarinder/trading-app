@@ -7,12 +7,14 @@ export function proxy(req: NextRequest) {
   const hasSession = Boolean(req.cookies.get(SESSION_COOKIE_NAME)?.value);
   const { pathname } = req.nextUrl;
 
-  if (pathname === "/" && !hasSession) {
-    return NextResponse.redirect(new URL("/login", req.url));
+  // "/" is the public marketing landing page — anyone can view it.
+  // Signed-in visitors are bounced straight to their dashboard instead.
+  if (pathname === "/" && hasSession) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
   if (AUTH_PATHS.has(pathname) && hasSession) {
-    return NextResponse.redirect(new URL("/", req.url));
+    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
   // Admin area — separate cookie/session from the member dashboard above.

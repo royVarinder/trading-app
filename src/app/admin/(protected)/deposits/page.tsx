@@ -80,7 +80,7 @@ export default function AdminDepositsPage() {
       member: (
         <span>
           <span className="font-semibold">{d.memberId}</span>
-          <span className="block text-xs text-gray-400">{d.username}</span>
+          <span className="block text-xs text-[color:var(--fincept-text-muted)]">{d.username}</span>
         </span>
       ),
       amount: `$${d.amount.toFixed(2)}`,
@@ -90,7 +90,7 @@ export default function AdminDepositsPage() {
         <span>
           <StatusBadge status={d.status} />
           {d.status === "Rejected" && d.rejectionReason && (
-            <span className="block text-xs text-gray-400">{d.rejectionReason}</span>
+            <span className="block text-xs text-[color:var(--fincept-text-muted)]">{d.rejectionReason}</span>
           )}
         </span>
       ),
@@ -107,7 +107,7 @@ export default function AdminDepositsPage() {
               />
               <button
                 type="button"
-                className="text-xs font-semibold text-red-600 hover:underline disabled:opacity-50"
+                className="text-xs font-semibold text-red-300 hover:underline disabled:opacity-50"
                 disabled={busyId === d.id}
                 onClick={() => act(d.id, "reject", rejectReason)}
               >
@@ -115,7 +115,7 @@ export default function AdminDepositsPage() {
               </button>
               <button
                 type="button"
-                className="text-xs font-semibold text-gray-400 hover:underline"
+                className="text-xs font-semibold text-[color:var(--fincept-text-muted)] hover:underline"
                 onClick={() => setRejectingId(null)}
               >
                 Cancel
@@ -125,7 +125,7 @@ export default function AdminDepositsPage() {
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                className="text-xs font-semibold text-emerald-600 hover:underline disabled:opacity-50"
+                className="text-xs font-semibold text-emerald-300 hover:underline disabled:opacity-50"
                 disabled={busyId === d.id}
                 onClick={() => act(d.id, "approve")}
               >
@@ -133,7 +133,7 @@ export default function AdminDepositsPage() {
               </button>
               <button
                 type="button"
-                className="text-xs font-semibold text-red-600 hover:underline disabled:opacity-50"
+                className="text-xs font-semibold text-red-300 hover:underline disabled:opacity-50"
                 disabled={busyId === d.id}
                 onClick={() => {
                   setRejectingId(d.id);
@@ -145,7 +145,7 @@ export default function AdminDepositsPage() {
             </div>
           )
         ) : (
-          <span className="text-xs text-gray-400">{d.reviewedBy ? `by ${d.reviewedBy}` : "—"}</span>
+          <span className="text-xs text-[color:var(--fincept-text-muted)]">{d.reviewedBy ? `by ${d.reviewedBy}` : "—"}</span>
         ),
     })) ?? [];
 
@@ -160,7 +160,7 @@ export default function AdminDepositsPage() {
             type="button"
             onClick={() => setTab(t)}
             className={`rounded-full px-4 py-1.5 text-xs font-semibold transition ${
-              tab === t ? "bg-brand-purple text-white" : "bg-white text-gray-500 hover:bg-gray-100"
+              tab === t ? "bg-brand-purple text-white" : "bg-[color:var(--fincept-card)] text-[color:var(--fincept-text-muted)] hover:bg-white/5"
             }`}
           >
             {t}
@@ -169,7 +169,7 @@ export default function AdminDepositsPage() {
       </div>
 
       {error && (
-        <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+        <p className="rounded-2xl border border-red-100 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-300">
           {error}
         </p>
       )}

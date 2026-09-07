@@ -76,7 +76,7 @@ export function Sidebar({
               type="button"
               onClick={onCloseMobile}
               aria-label="Close menu"
-              className="rounded-lg p-1.5 text-gray-300 hover:bg-white/5 hover:text-white lg:hidden"
+              className="rounded-lg p-1.5 text-[color:var(--fincept-text-muted)] hover:bg-white/5 hover:text-white lg:hidden"
             >
               <CloseIcon className="h-5 w-5" />
             </button>
@@ -95,7 +95,7 @@ export function Sidebar({
                     className={`flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition ${
                       isActive
                         ? "bg-gradient-to-r from-brand-purple to-brand-purple-light text-white shadow-lg shadow-brand-purple/30"
-                        : "text-gray-300 hover:bg-white/5 hover:text-white"
+                        : "text-[color:var(--fincept-text-muted)] hover:bg-white/5 hover:text-white"
                     }`}
                   >
                     <Icon className="h-4 w-4 shrink-0" />
@@ -116,7 +116,7 @@ export function Sidebar({
                     className={`flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition ${
                       hasActiveChild && !isOpen
                         ? "text-white"
-                        : "text-gray-300 hover:bg-white/5 hover:text-white"
+                        : "text-[color:var(--fincept-text-muted)] hover:bg-white/5 hover:text-white"
                     }`}
                   >
                     <Icon className="h-4 w-4 shrink-0" />
@@ -138,7 +138,7 @@ export function Sidebar({
                             className={`block w-full rounded-lg px-3 py-2 text-left text-[13px] font-medium transition ${
                               isActive
                                 ? "bg-white/10 text-white"
-                                : "text-gray-400 hover:bg-white/5 hover:text-white"
+                                : "text-[color:var(--fincept-text-muted)] hover:bg-white/5 hover:text-white"
                             }`}
                           >
                             {child.label}
@@ -161,7 +161,7 @@ export function Sidebar({
                 <button
                   type="button"
                   onClick={() => selectAndClose("dashboard")}
-                  className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-gray-300 transition hover:bg-white/5 hover:text-white"
+                  className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-[color:var(--fincept-text-muted)] transition hover:bg-white/5 hover:text-white"
                 >
                   <GridIcon className="h-4 w-4" />
                   Dashboard
@@ -169,7 +169,7 @@ export function Sidebar({
                 <button
                   type="button"
                   onClick={() => selectAndClose("profile")}
-                  className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-gray-300 transition hover:bg-white/5 hover:text-white"
+                  className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-[color:var(--fincept-text-muted)] transition hover:bg-white/5 hover:text-white"
                 >
                   <UserIcon className="h-4 w-4" />
                   Profile
@@ -177,7 +177,7 @@ export function Sidebar({
                 <button
                   type="button"
                   onClick={() => selectAndClose("change-password")}
-                  className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-gray-300 transition hover:bg-white/5 hover:text-white"
+                  className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-[color:var(--fincept-text-muted)] transition hover:bg-white/5 hover:text-white"
                 >
                   <LockIcon className="h-4 w-4" />
                   Change Password
@@ -210,10 +210,10 @@ export function Sidebar({
             </span>
             <span className="min-w-0 flex-1">
               <span className="block truncate text-sm font-medium text-white">{username}</span>
-              <span className="block truncate text-xs text-gray-400">ID: {memberId}</span>
+              <span className="block truncate text-xs text-[color:var(--fincept-text-muted)]">ID: {memberId}</span>
             </span>
             <ChevronDownIcon
-              className={`h-3.5 w-3.5 shrink-0 text-gray-400 transition-transform ${menuOpen ? "" : "rotate-180"}`}
+              className={`h-3.5 w-3.5 shrink-0 text-[color:var(--fincept-text-muted)] transition-transform ${menuOpen ? "" : "rotate-180"}`}
             />
           </button>
         </div>

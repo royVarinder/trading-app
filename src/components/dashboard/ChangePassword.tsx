@@ -54,7 +54,7 @@ export function ChangePassword() {
   return (
     <div className="space-y-6">
       <PageHeader title="Change Password" subtitle="Update the password used to sign in." />
-      <div className="max-w-xl rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+      <div className="max-w-xl rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-6 shadow-sm">
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="field-label" htmlFor="currentPassword">
@@ -75,7 +75,7 @@ export function ChangePassword() {
             <input id="confirmPassword" name="confirmPassword" type="password" className="field-input" required />
           </div>
           {error && <p className="text-sm font-medium text-red-500">{error}</p>}
-          {saved && <p className="text-sm font-medium text-emerald-600">Password updated successfully.</p>}
+          {saved && <p className="text-sm font-medium text-emerald-300">Password updated successfully.</p>}
           <div className="flex items-center gap-3">
             <button type="submit" className="btn-solid disabled:opacity-70" disabled={submitting}>
               {submitting ? "Updating..." : "Change Password"}

@@ -83,17 +83,17 @@ export function Withdraw() {
           rows={[
             { label: "Total Income", value: `$${wallet.totalIncome.toFixed(2)}` },
             { label: "Total Withdrawal", value: `$${wallet.totalIncomeWithdrawal.toFixed(2)}` },
-            { label: "Net Income", value: `$${wallet.netIncome.toFixed(2)}`, valueClassName: "text-emerald-600" },
+            { label: "Net Income", value: `$${wallet.netIncome.toFixed(2)}`, valueClassName: "text-emerald-300" },
           ]}
           footer={
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-[color:var(--fincept-text-muted)]">
               Minimum withdrawal ${MIN_WITHDRAWAL}, 5% admin charge applies
             </p>
           }
         />
       </div>
 
-      <div className="max-w-md rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+      <div className="max-w-md rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-6 shadow-sm">
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="field-label" htmlFor="withdrawAmount">
@@ -111,7 +111,7 @@ export function Withdraw() {
             />
           </div>
           {error && <p className="text-sm font-medium text-red-500">{error}</p>}
-          {submitted && <p className="text-sm font-medium text-emerald-600">Request submitted — pending admin review.</p>}
+          {submitted && <p className="text-sm font-medium text-emerald-300">Request submitted — pending admin review.</p>}
           <button type="submit" className="btn-solid disabled:opacity-70" disabled={submitting}>
             {submitting ? "Submitting..." : "Request Withdrawal"}
           </button>

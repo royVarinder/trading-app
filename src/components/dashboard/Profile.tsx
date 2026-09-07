@@ -108,7 +108,7 @@ export function Profile() {
   let body: React.ReactNode;
   if (loadError) {
     body = (
-      <p className="max-w-md rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+      <p className="max-w-md rounded-2xl border border-red-100 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-300">
         {loadError}
       </p>
     );
@@ -122,8 +122,8 @@ export function Profile() {
   } else if (editing) {
     body = (
       <div className="max-w-md space-y-6">
-        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-          <h2 className="mb-3 text-sm font-semibold text-[#1f2430]">Edit Profile</h2>
+        <div className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-5 shadow-sm">
+          <h2 className="mb-3 text-sm font-semibold text-[color:var(--fincept-text)]">Edit Profile</h2>
           <form className="space-y-4" onSubmit={handleSave}>
             <div>
               <label className="field-label" htmlFor="editUsername">
@@ -206,7 +206,7 @@ export function Profile() {
                 Edit
               </button>
               {saved && (
-                <span className="text-sm font-medium text-emerald-600">
+                <span className="text-sm font-medium text-emerald-300">
                   Profile updated — confirmation emailed to you.
                 </span>
               )}
@@ -215,24 +215,24 @@ export function Profile() {
         />
 
         {profile.canRefer ? (
-          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-            <h2 className="text-sm font-semibold text-[#1f2430]">Your Referral Link</h2>
-            <p className="mt-1 text-xs text-gray-500">
+          <div className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-5 shadow-sm">
+            <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">Your Referral Link</h2>
+            <p className="mt-1 text-xs text-[color:var(--fincept-text-muted)]">
               Share this link — anyone who signs up through it is added under you as their sponsor.
             </p>
             <button
               type="button"
               onClick={copyReferralLink}
-              className="mt-3 w-full truncate rounded-xl bg-gray-50 px-3 py-2.5 text-left font-mono text-xs text-gray-600 transition hover:bg-gray-100"
+              className="mt-3 w-full truncate rounded-xl bg-[color:var(--fincept-bg-soft)] px-3 py-2.5 text-left font-mono text-xs text-[color:var(--fincept-text-muted)] transition hover:bg-white/5"
               title="Click to copy"
             >
               {copied ? "Copied to clipboard!" : referralLink}
             </button>
           </div>
         ) : (
-          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-            <h2 className="text-sm font-semibold text-[#1f2430]">Your Referral Link</h2>
-            <p className="mt-1 text-xs text-gray-500">
+          <div className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-5 shadow-sm">
+            <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">Your Referral Link</h2>
+            <p className="mt-1 text-xs text-[color:var(--fincept-text-muted)]">
               Deposit $50 or more (and get it approved) to unlock your referral link and start sponsoring
               new members.
             </p>
