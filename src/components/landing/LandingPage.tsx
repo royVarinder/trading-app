@@ -7,8 +7,7 @@ import { CloseIcon, MailIcon, MenuIcon, PhoneIcon } from "@/components/icons";
 
 const NAV_LINKS = [
   { href: "#top", label: "Home" },
-  { href: "#services", label: "Services" },
-  { href: "#pricing", label: "Pricing" },
+  { href: "#services", label: "Trading" },
   { href: "#testimonials", label: "Testimonials" },
 ];
 
@@ -20,111 +19,54 @@ const PARTNER_WORDMARKS = ["Northbridge", "Solace Capital", "Vantage Group", "La
 
 const SERVICES = [
   {
-    highlight: "Investment",
-    name: "Investment Planning",
+    highlight: "Copy",
+    name: "Copy Trading",
     description:
-      "Ut eius quae sed. Quibusdam id minus nihil repellendus. Consequatur est est modi magnam et ab sapiente. Doloremque officia a tempora. Cumque ratione optio deserunt voluptates quasi.",
+      "Mirror the live positions of experienced, verified traders in real time. Your results move with theirs — gains and losses included — so you always know exactly what you're exposed to.",
     image: "/fincept/media/services/img-1.png",
   },
   {
-    name: "Retirement Strategy",
-    highlight: "Retirement",
+    name: "Leverage Trading",
+    highlight: "Leverage",
     description:
-      "Ut eius quae sed. Quibusdam id minus nihil repellendus. Consequatur est est modi magnam et ab sapiente. Doloremque officia a tempora. Cumque ratione optio deserunt voluptates quasi.",
+      "Trade major and minor currency pairs with up to 4x leverage. Amplify your market exposure while managing risk with built-in stop-loss and take-profit tools on every position.",
     image: "/fincept/media/services/img-2.png",
   },
   {
-    name: "Tax Optimization",
-    highlight: "Tax",
+    name: "Market Education",
+    highlight: "Market",
     description:
-      "Ut eius quae sed. Quibusdam id minus nihil repellendus. Consequatur est est modi magnam et ab sapiente. Doloremque officia a tempora. Cumque ratione optio deserunt voluptates quasi.",
+      "Access webinars, market analysis, and a growing library of trading guides. Learn risk management and technical analysis from real practitioners, at your own pace.",
     image: "/fincept/media/services/img-3.png",
-  },
-];
-
-const PRICING_PLANS = [
-  {
-    name: "Basic Plan",
-    description: "Numerous businesses looking to improve their web efficiency.",
-    price: "$30",
-    features: [
-      "Exclusive 24/7 support access.",
-      "24/7 financial help.",
-      "Tailored investment plans.",
-      "In-depth portfolio review.",
-      "Priority assistance",
-    ],
-    featured: false,
-  },
-  {
-    name: "Economy Plan",
-    description: "Many companies aiming to enhance their online performance.",
-    price: "$55",
-    features: [
-      "Premium support anytime.",
-      "24/7 financial help.",
-      "Custom investment strategies.",
-      "Experience priority support",
-      "Thorough portfolio analysis.",
-    ],
-    featured: true,
-  },
-  {
-    name: "Premium Plan",
-    description: "A variety of organizations seeking to optimize their web results.",
-    price: "$90",
-    features: [
-      "White-glove 24/7 support.",
-      "24/7 financial help.",
-      "Dedicated investment advisor.",
-      "Quarterly portfolio review.",
-      "Top priority assistance",
-    ],
-    featured: false,
   },
 ];
 
 const TESTIMONIALS = [
   {
     quote:
-      "PRIMEFX transformed the way we manage our company’s finances. From tracking expenses to forecasting it’s all just seamless now.",
-    name: "Samantha Lin",
-    role: "CFO at Ledgerline Group",
+      "PRIMEFX’s copy trading feature let me see exactly what I was mirroring before committing a single dollar. The transparency is what kept me around.",
+    name: "Daniel Cho",
+    role: "Retail Forex Trader",
   },
   {
     quote:
-      "We were drowning in spreadsheets. PRIMEFX gave us structure, insights, and peace of mind. It’s like having a full finance team on autopilot.",
-    name: "Michelle Okafor",
-    role: "Founder at Finverse AI",
+      "The market education library helped me understand leverage and risk before I started trading, not after I’d already learned the hard way.",
+    name: "Amara Obi",
+    role: "Part-Time Trader",
   },
   {
     quote:
-      "In just 90 days, we improved our tax efficiency by 27%. The reporting dashboards are intuitive and helped our team make smarter decisions faster.",
-    name: "Andre Vasquez",
-    role: "Director of Finance, Logistics",
+      "Execution is fast and the platform never hides my open risk. I always know my exposure before the market moves.",
+    name: "Marcus Feldman",
+    role: "Full-Time Trader",
   },
   {
     quote:
-      "PRIMEFX transformed the way we manage our company’s finances. From tracking expenses to forecasting it’s all just seamless now.",
+      "Support actually answers when the market is moving at 2am. That alone puts PRIMEFX ahead of every other platform I’ve used.",
     name: "Priya Nair",
-    role: "Head of Ops, Solvex Capital",
+    role: "Active Trader",
   },
 ];
-
-function CheckIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 20 30" fill="none" className={className} aria-hidden="true">
-      <path
-        d="M10 5C4.47715 5 0 9.47715 0 15C0 20.5228 4.47715 25 10 25C15.5228 25 20 20.5228 20 15C19.9936 9.47982 15.5202 5.00643 10 5Z"
-        fill="var(--fincept-green-light)"
-      />
-      <path
-        d="M15.2819 11.3571L9.57777 19.0979C9.44174 19.2784 9.23888 19.3966 9.01479 19.4261C8.7907 19.4556 8.56418 19.3938 8.38611 19.2546L4.31277 15.9979C3.95333 15.7102 3.89513 15.1857 4.18277 14.8262C4.47042 14.4668 4.995 14.4086 5.35444 14.6962L8.75111 17.4137L13.9403 10.3712C14.1104 10.1159 14.4072 9.97471 14.7126 10.0038C15.0181 10.0328 15.2829 10.2274 15.4019 10.5102C15.5209 10.793 15.4748 11.1184 15.2819 11.3571Z"
-        fill="#0C0C0D"
-      />
-    </svg>
-  );
-}
 
 function ArrowUpRightIcon({ className = "" }: { className?: string }) {
   return (
@@ -251,16 +193,16 @@ export function LandingPage() {
         <div className="relative mx-auto max-w-2xl text-center">
           <div className="mb-8 flex items-center justify-center gap-3">
             <ArrowUpRightIcon className="h-8 w-8 shrink-0" />
-            <p className="text-lg font-medium text-[color:var(--fincept-green-light)]">Regain Control Of Your Money</p>
+            <p className="text-lg font-medium text-[color:var(--fincept-green-light)]">Trade Global Forex Markets</p>
           </div>
 
           <h1 className="text-5xl leading-[1.05] font-extrabold sm:text-6xl md:text-7xl">
-            Plan Your <span className="fincept-gradient-text">Finance</span>
+            Trade Forex <span className="fincept-gradient-text">Smarter</span>
           </h1>
 
           <p className="mx-auto mt-8 max-w-xl text-base text-[color:var(--fincept-text)] sm:text-lg">
-            We can Get you the best Finance can Get you the best Finance Possible. We can Get you the best Finance
-            Possible.
+            Access global currency markets with up to 4x leverage, professional copy-trading strategies, and
+            transparent risk management — trade on your terms, backed by real market data.
           </p>
 
           <Link href="/signup" className="fincept-btn mt-10 !w-auto px-8 py-3.5">
@@ -270,9 +212,9 @@ export function LandingPage() {
           <div className="mx-auto mt-14 flex max-w-xs items-center justify-center gap-4 rounded-3xl border border-white/5 bg-white/[0.02] px-6 py-5">
             <p className="font-hanken text-3xl font-bold text-[color:var(--fincept-green-light)]">4.7+</p>
             <h2 className="text-left text-lg font-semibold">
-              Out of 40k+
+              Rated by 40k+
               <br />
-              Reviews
+              Traders
             </h2>
           </div>
         </div>
@@ -281,8 +223,8 @@ export function LandingPage() {
       {/* Brand strip */}
       <section className="mx-auto max-w-7xl px-5 pb-24 sm:px-8">
         <h2 className="mb-12 text-center text-xl font-semibold sm:text-2xl">
-          Trusted by over <br className="sm:hidden" />
-          <span className="fincept-gradient-text">6,500 companies</span>
+          Backed by trusted <br className="sm:hidden" />
+          <span className="fincept-gradient-text">market partners</span>
         </h2>
         <div className="relative overflow-hidden">
           <div className="flex w-max animate-[marquee_22s_linear_infinite] items-center gap-16 opacity-60">
@@ -308,23 +250,22 @@ export function LandingPage() {
           <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
               <h2 className="mb-4 text-3xl font-bold sm:text-4xl">
-                HANDLING <span className="fincept-gradient-text">Expenses</span> FOR
+                TRACK YOUR <span className="fincept-gradient-text">Trading</span> PERFORMANCE
               </h2>
               <p className="text-[color:var(--fincept-text-muted)]">
-                We can Get you the best Finance can Get you the best Finance Possible. We can Get you the best Finance
-                Possible. We can Get you the best Finance can Get you the best Finance Possible. We can Get you the
-                best Finance Possible.
+                Monitor your open positions, closed trades, and portfolio performance in real time — all from one
+                clean, intuitive dashboard built for active forex traders.
               </p>
             </div>
             <h2 className="shrink-0 text-3xl font-bold sm:text-4xl">
               <span className="fincept-gradient-text">3K+</span> <br />
-              Clients
+              Active Traders
             </h2>
           </div>
 
           <Image
             src="/fincept/media/images/chart.png"
-            alt="Expense trend chart"
+            alt="Trading performance chart"
             width={2682}
             height={816}
             className="mb-6 w-full rounded-2xl"
@@ -346,7 +287,7 @@ export function LandingPage() {
       {/* Services */}
       <section id="services" className="mx-auto max-w-7xl px-5 pb-24 sm:px-8">
         <h2 className="mb-16 text-center text-3xl font-bold uppercase sm:text-4xl">
-          Elevate Your Finance with <span className="fincept-gradient-text">PRIMEFX</span>
+          Trade the Markets with <span className="fincept-gradient-text">PRIMEFX</span>
         </h2>
 
         <div className="space-y-8">
@@ -385,20 +326,20 @@ export function LandingPage() {
           <div className="relative overflow-hidden rounded-3xl">
             <Image
               src="/fincept/media/images/shape-1.png"
-              alt="Members trust PRIMEFX with their money"
+              alt="Traders using the PRIMEFX platform"
               width={708}
               height={492}
               className="w-full"
             />
             <div className="absolute left-6 top-6 rounded-2xl bg-[rgba(12,12,13,0.8)] px-5 py-4 backdrop-blur">
-              <p className="text-2xl font-bold">43%</p>
-              <p className="text-sm font-semibold text-[color:var(--fincept-text-muted)]">Tax Saving</p>
+              <p className="text-2xl font-bold">4x</p>
+              <p className="text-sm font-semibold text-[color:var(--fincept-text-muted)]">Max Leverage</p>
             </div>
           </div>
 
           <div>
             <h2 className="mb-6 text-3xl font-bold sm:text-4xl">
-              Over <span className="fincept-gradient-text">100K</span> People Trust Us With Their Money
+              Join a Growing <span className="fincept-gradient-text">Global Trading</span> Community
             </h2>
             <div className="flex -space-x-3">
               {["user-1", "user-2", "user-3", "user-4"].map((u) => (
@@ -421,19 +362,19 @@ export function LandingPage() {
         <div className="fincept-card mt-10 grid gap-10 p-8 sm:p-10 lg:grid-cols-2 lg:items-center">
           <div>
             <h3 className="mb-4 text-2xl font-bold sm:text-3xl">
-              Tax <span className="text-[color:var(--fincept-green-light)]">Optimization</span> to Boost Savings
+              Execution <span className="text-[color:var(--fincept-green-light)]">Built</span> for Active Traders
             </h3>
             <p className="text-[color:var(--fincept-text-muted)]">
-              Et nulla tempore molestiae qui. Est delectus veniam consequatur omnis. Libero non eaque dolore dolorum
-              architecto eius.
+              Every order runs through infrastructure designed for speed and reliability, so the price you see is the
+              price you get — no surprises when the market is moving fast.
             </p>
           </div>
 
           <div className="space-y-5">
             {[
-              { label: "Effectiveness", value: 70 },
-              { label: "Savings", value: 90 },
-              { label: "Revenue Increase", value: 80 },
+              { label: "Order Execution Speed", value: 92 },
+              { label: "Platform Uptime", value: 99 },
+              { label: "Client Satisfaction", value: 88 },
             ].map((item) => (
               <div key={item.label}>
                 <div className="mb-2 flex items-center justify-between text-sm font-medium">
@@ -452,50 +393,9 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Pricing */}
-      <section id="pricing" className="mx-auto max-w-7xl px-5 pb-24 sm:px-8">
-        <h2 className="mb-16 text-center text-3xl font-bold uppercase sm:text-4xl">
-          Our Pricing <span className="fincept-gradient-text">Plans</span>
-        </h2>
-
-        <div className="grid gap-6 md:grid-cols-3">
-          {PRICING_PLANS.map((plan) => (
-            <div
-              key={plan.name}
-              className={`flex flex-col rounded-3xl border p-8 ${
-                plan.featured
-                  ? "border-[color:var(--fincept-green)] bg-gradient-to-b from-[rgba(83,159,117,0.1)] to-transparent"
-                  : "border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)]"
-              }`}
-            >
-              <h3 className="mb-3 text-lg font-semibold text-[color:var(--fincept-green-light)]">{plan.name}</h3>
-              <p className="mb-8 text-sm text-[color:var(--fincept-text-muted)]">{plan.description}</p>
-              <div className="mb-2 flex items-end gap-1">
-                <span className="text-4xl font-bold">{plan.price}</span>
-                <span className="pb-1 text-sm text-[color:var(--fincept-text-muted)]">/Per Hour</span>
-              </div>
-              <p className="mb-8 text-sm text-[color:var(--fincept-text-muted)]">Billed Yearly</p>
-
-              <ul className="mb-10 space-y-3">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-3 text-sm text-[color:var(--fincept-text-muted)]">
-                    <CheckIcon className="h-5 w-4 shrink-0" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-
-              <Link href="/signup" className="fincept-btn mt-auto">
-                Book Session
-              </Link>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Testimonials */}
       <section id="testimonials" className="mx-auto max-w-7xl px-5 pb-24 sm:px-8">
-        <h2 className="mb-16 text-center text-3xl font-bold uppercase sm:text-4xl">What Our Clients Say</h2>
+        <h2 className="mb-16 text-center text-3xl font-bold uppercase sm:text-4xl">What Our Traders Say</h2>
         <div className="grid gap-6 md:grid-cols-2">
           {TESTIMONIALS.map((t) => (
             <div key={t.name + t.role} className="fincept-card p-8">
@@ -511,10 +411,11 @@ export function LandingPage() {
       <section className="mx-auto max-w-7xl px-5 pb-24 sm:px-8">
         <div className="fincept-card flex flex-col items-center gap-6 p-10 text-center sm:p-16">
           <h2 className="max-w-2xl text-3xl font-bold sm:text-4xl">
-            Ready to <span className="fincept-gradient-text">Plan Your Finance</span> With PRIMEFX?
+            Ready to <span className="fincept-gradient-text">Trade Forex</span> With PRIMEFX?
           </h2>
           <p className="max-w-xl text-[color:var(--fincept-text-muted)]">
-            Create your free account in minutes and get access to your personal finance dashboard.
+            Open your account in minutes and get access to copy trading, up to 4x leverage, and real-time market
+            tools.
           </p>
           <Link href="/signup" className="fincept-btn !w-auto px-8 py-3.5">
             Get Started
@@ -532,7 +433,8 @@ export function LandingPage() {
                 <span className="font-hanken text-base font-bold tracking-wide">PRIMEFX</span>
               </div>
               <p className="mb-6 max-w-xs text-sm text-[color:var(--fincept-text-muted)]">
-                Unlock your brand&rsquo;s true potential with innovative digital strategies that drive results.
+                PRIMEFX gives traders access to global forex markets with real-time execution, professional
+                copy-trading strategies, and up to 4x leverage &mdash; trade with transparent risk management.
               </p>
               <div className="flex items-center gap-3">
                 {[
@@ -559,8 +461,8 @@ export function LandingPage() {
               </h3>
               <ul className="space-y-3 text-sm">
                 <li><a href="#top" className="hover:text-[color:var(--fincept-green-light)]">Home</a></li>
-                <li><a href="#services" className="hover:text-[color:var(--fincept-green-light)]">Services</a></li>
-                <li><a href="#pricing" className="hover:text-[color:var(--fincept-green-light)]">Pricing</a></li>
+                <li><a href="#services" className="hover:text-[color:var(--fincept-green-light)]">Trading</a></li>
+                <li><a href="#testimonials" className="hover:text-[color:var(--fincept-green-light)]">Testimonials</a></li>
                 <li><Link href="/login" className="hover:text-[color:var(--fincept-green-light)]">Log In</Link></li>
                 <li><Link href="/signup" className="hover:text-[color:var(--fincept-green-light)]">Sign Up</Link></li>
               </ul>
@@ -568,12 +470,12 @@ export function LandingPage() {
 
             <div>
               <h3 className="mb-5 text-sm font-semibold uppercase tracking-wide text-[color:var(--fincept-text-muted)]">
-                Services
+                Trading
               </h3>
               <ul className="space-y-3 text-sm text-[color:var(--fincept-text-muted)]">
-                <li>Investment Planning</li>
-                <li>Retirement Strategy</li>
-                <li>Tax Optimization</li>
+                <li>Copy Trading</li>
+                <li>Leverage Trading</li>
+                <li>Market Education</li>
               </ul>
             </div>
 
@@ -593,8 +495,12 @@ export function LandingPage() {
             </div>
           </div>
 
-          <div className="mt-14 border-t border-white/5 pt-8 text-center text-xs text-[color:var(--fincept-text-muted)]">
-            &copy;2026 All Rights Reserved By PRIMEFX
+          <div className="mt-14 space-y-3 border-t border-white/5 pt-8 text-center text-xs text-[color:var(--fincept-text-muted)]">
+            <p className="mx-auto max-w-2xl">
+              Trading forex and CFDs involves significant risk and may result in losses exceeding your deposit. Past
+              performance is not indicative of future results.
+            </p>
+            <p>&copy;2026 All Rights Reserved By PRIMEFX</p>
           </div>
         </div>
       </footer>
