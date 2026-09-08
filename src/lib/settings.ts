@@ -8,13 +8,15 @@ import {
 } from "@/lib/plans";
 
 export type PlatformSettings = {
-  startupPlan: { min: number; dailyRate: number };
+  // No "package" tiers — a single admin-configurable rate/interval applied
+  // to whatever amount a member moves from wallet into an investment. See
+  // src/lib/accrual.ts#runInvestmentIncomeAccrual.
+  startupPlan: { min: number; ratePct: number; intervalHours: number };
   stakingTiers: StakingTier[];
   leadershipRanks: LeadershipRank[];
   depositWalletAddress: string;
   withdrawalMin: number;
   withdrawalAdminChargeRate: number;
-  depositIncome: { enabled: boolean; ratePct: number; intervalHours: number };
 };
 
 // The values src/lib/plans.ts previously hardcoded, now the fallback used
@@ -27,7 +29,6 @@ export const DEFAULT_SETTINGS: PlatformSettings = {
   depositWalletAddress: "0xDDC09476D30Fae1B08fC68fe7F65949a1B648954",
   withdrawalMin: 10,
   withdrawalAdminChargeRate: 0.05,
-  depositIncome: { enabled: true, ratePct: 0.5, intervalHours: 24 },
 };
 
 const SETTINGS_ID = "platform";
@@ -44,13 +45,20 @@ export async function getSettings(): Promise<PlatformSettings> {
   const doc = await db.collection<SettingsDoc>("settings").findOne({ _id: SETTINGS_ID });
 
   const value: PlatformSettings = {
-    startupPlan: doc?.startupPlan ?? DEFAULT_SETTINGS.startupPlan,
+    // Field-by-field fallback (not a whole-object fallback) so a
+    // pre-existing stored startupPlan from before ratePct/intervalHours
+    // existed (the old { min, dailyRate } shape) self-heals to the new
+    // defaults for the fields it's missing, instead of needing a migration.
+    startupPlan: {
+      min: doc?.startupPlan?.min ?? DEFAULT_SETTINGS.startupPlan.min,
+      ratePct: doc?.startupPlan?.ratePct ?? DEFAULT_SETTINGS.startupPlan.ratePct,
+      intervalHours: doc?.startupPlan?.intervalHours ?? DEFAULT_SETTINGS.startupPlan.intervalHours,
+    },
     stakingTiers: doc?.stakingTiers ?? DEFAULT_SETTINGS.stakingTiers,
     leadershipRanks: doc?.leadershipRanks ?? DEFAULT_SETTINGS.leadershipRanks,
     depositWalletAddress: doc?.depositWalletAddress ?? DEFAULT_SETTINGS.depositWalletAddress,
     withdrawalMin: doc?.withdrawalMin ?? DEFAULT_SETTINGS.withdrawalMin,
     withdrawalAdminChargeRate: doc?.withdrawalAdminChargeRate ?? DEFAULT_SETTINGS.withdrawalAdminChargeRate,
-    depositIncome: doc?.depositIncome ?? DEFAULT_SETTINGS.depositIncome,
   };
 
   cache = { value, expiresAt: Date.now() + CACHE_TTL_MS };

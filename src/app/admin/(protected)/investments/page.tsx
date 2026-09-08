@@ -11,7 +11,9 @@ type Position = {
   memberId: string;
   username: string;
   amount: number;
-  dailyRate: number;
+  // Only present for stakes — investments earn the single platform-wide
+  // rate/interval configured in Settings, not a per-position rate.
+  dailyRate?: number;
   status: string;
   createdAt: string;
   tierId?: string;
@@ -81,7 +83,7 @@ export default function AdminInvestmentsPage() {
         </span>
       ),
       amount: `$${p.amount.toFixed(2)}`,
-      rate: `${(p.dailyRate * 100).toFixed(2)}%/day`,
+      rate: kind === "stakes" ? `${((p.dailyRate ?? 0) * 100).toFixed(2)}%/day` : "Platform rate — see Settings",
       progress: kind === "stakes" ? `${p.creditedDays ?? 0}/${p.durationDays ?? 0} days` : "—",
       date: new Date(p.createdAt).toLocaleDateString(),
       status: <StatusBadge status={p.status} />,

@@ -1,6 +1,7 @@
 export const STARTUP_PLAN = {
   min: 50,
-  dailyRate: 0.005,
+  ratePct: 0.5,
+  intervalHours: 24,
 } as const;
 
 export type StakingTierId = "starter" | "growth" | "advanced" | "premium" | "elite";

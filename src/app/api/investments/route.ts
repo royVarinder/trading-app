@@ -60,13 +60,18 @@ export async function POST(req: Request) {
     );
   }
 
+  const createdAt = new Date();
   const doc = {
     memberId: session.memberId,
     username: session.username,
     amount,
-    dailyRate: startupPlan.dailyRate,
     status: "Active" as const,
-    createdAt: new Date(),
+    createdAt,
+    // Anchors investment income accrual (src/lib/accrual.ts#runInvestmentIncomeAccrual)
+    // — starts earning immediately at the platform's current rate/interval,
+    // not a rate locked in at creation time.
+    investmentIncomeStartAt: createdAt,
+    creditedIntervals: 0,
   };
   const result = await db.collection("investments").insertOne(doc);
 

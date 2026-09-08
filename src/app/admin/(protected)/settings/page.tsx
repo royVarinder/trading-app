@@ -15,13 +15,12 @@ type LeadershipRank = {
   monthlyReward: number;
 };
 type Settings = {
-  startupPlan: { min: number; dailyRate: number };
+  startupPlan: { min: number; ratePct: number; intervalHours: number };
   stakingTiers: StakingTier[];
   leadershipRanks: LeadershipRank[];
   depositWalletAddress: string;
   withdrawalMin: number;
   withdrawalAdminChargeRate: number;
-  depositIncome: { enabled: boolean; ratePct: number; intervalHours: number };
 };
 
 // Displaying a stored decimal rate (e.g. 0.007) as a percentage via `* 100`
@@ -32,8 +31,8 @@ function toPercentDisplay(rate: number): number {
   return Math.round(rate * 100 * 1e6) / 1e6;
 }
 
-// The deposit income interval is always stored/sent as fractional hours
-// (matches PlatformSettings.depositIncome.intervalHours and the accrual
+// The investment income interval is always stored/sent as fractional hours
+// (matches PlatformSettings.startupPlan.intervalHours and the accrual
 // engine's math in src/lib/accrual.ts) — this is purely a display/input
 // convenience so an admin can type "30" + "Minutes" instead of computing
 // 0.5 hours by hand. Converting through hours both ways keeps the stored
@@ -169,8 +168,12 @@ export default function AdminSettingsPage() {
       </div>
 
       <div className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-6 shadow-sm">
-        <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">Startup (Investment) Plan</h2>
-        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">Investment Plan</h2>
+        <p className="mt-1 text-xs text-[color:var(--fincept-text-muted)]">
+          No package tiers — this single rate/interval applies to whatever amount a member moves from wallet into
+          an investment. Profit starts the moment the investment is created.
+        </p>
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
             <label className="field-label">Minimum ($)</label>
             <input
@@ -183,56 +186,16 @@ export default function AdminSettingsPage() {
             />
           </div>
           <div>
-            <label className="field-label">Daily Rate (%)</label>
-            <input
-              type="number"
-              step="0.01"
-              className="field-input"
-              value={toPercentDisplay(settings.startupPlan.dailyRate)}
-              onChange={(e) =>
-                setSettings({
-                  ...settings,
-                  startupPlan: { ...settings.startupPlan, dailyRate: Number(e.target.value) / 100 },
-                })
-              }
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-6 shadow-sm">
-        <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">Deposit Income</h2>
-        <p className="mt-1 text-xs text-[color:var(--fincept-text-muted)]">
-          Every approved deposit earns this rate, automatically, every N hours — independent of investments/staking.
-        </p>
-        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="flex items-center gap-2">
-            <input
-              id="depositIncomeEnabled"
-              type="checkbox"
-              checked={settings.depositIncome.enabled}
-              onChange={(e) =>
-                setSettings({
-                  ...settings,
-                  depositIncome: { ...settings.depositIncome, enabled: e.target.checked },
-                })
-              }
-            />
-            <label htmlFor="depositIncomeEnabled" className="field-label mb-0">
-              Enabled
-            </label>
-          </div>
-          <div>
             <label className="field-label">Rate per interval (%)</label>
             <input
               type="number"
               step="0.01"
               className="field-input"
-              value={settings.depositIncome.ratePct}
+              value={settings.startupPlan.ratePct}
               onChange={(e) =>
                 setSettings({
                   ...settings,
-                  depositIncome: { ...settings.depositIncome, ratePct: Number(e.target.value) },
+                  startupPlan: { ...settings.startupPlan, ratePct: Number(e.target.value) },
                 })
               }
             />
@@ -245,12 +208,12 @@ export default function AdminSettingsPage() {
                 step="0.01"
                 min="0.01"
                 className="field-input"
-                value={toUnitDisplay(settings.depositIncome.intervalHours, intervalUnit)}
+                value={toUnitDisplay(settings.startupPlan.intervalHours, intervalUnit)}
                 onChange={(e) =>
                   setSettings({
                     ...settings,
-                    depositIncome: {
-                      ...settings.depositIncome,
+                    startupPlan: {
+                      ...settings.startupPlan,
                       intervalHours: Number(e.target.value) * UNIT_TO_HOURS[intervalUnit],
                     },
                   })

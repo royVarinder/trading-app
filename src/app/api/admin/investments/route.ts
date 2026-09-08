@@ -22,7 +22,6 @@ export async function GET(req: Request) {
       memberId: inv.memberId,
       username: inv.username,
       amount: inv.amount,
-      dailyRate: inv.dailyRate,
       status: inv.status,
       createdAt: inv.createdAt,
     })),

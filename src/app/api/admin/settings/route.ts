@@ -26,11 +26,19 @@ export async function PATCH(req: Request) {
 
   if (body.startupPlan) {
     const min = Number(body.startupPlan.min);
-    const dailyRate = Number(body.startupPlan.dailyRate);
-    if (!Number.isFinite(min) || min <= 0 || !Number.isFinite(dailyRate) || dailyRate <= 0) {
+    const ratePct = Number(body.startupPlan.ratePct);
+    const intervalHours = Number(body.startupPlan.intervalHours);
+    if (
+      !Number.isFinite(min) ||
+      min <= 0 ||
+      !Number.isFinite(ratePct) ||
+      ratePct <= 0 ||
+      !Number.isFinite(intervalHours) ||
+      intervalHours <= 0
+    ) {
       return NextResponse.json({ error: "Invalid startup plan values." }, { status: 400 });
     }
-    patch.startupPlan = { min, dailyRate };
+    patch.startupPlan = { min, ratePct, intervalHours };
   }
 
   if (Array.isArray(body.stakingTiers)) {
@@ -73,16 +81,6 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: "Withdrawal admin charge rate must be between 0 and 1." }, { status: 400 });
     }
     patch.withdrawalAdminChargeRate = rate;
-  }
-
-  if (body.depositIncome) {
-    const enabled = Boolean(body.depositIncome.enabled);
-    const ratePct = Number(body.depositIncome.ratePct);
-    const intervalHours = Number(body.depositIncome.intervalHours);
-    if (!Number.isFinite(ratePct) || ratePct < 0 || !Number.isFinite(intervalHours) || intervalHours <= 0) {
-      return NextResponse.json({ error: "Invalid deposit income values." }, { status: 400 });
-    }
-    patch.depositIncome = { enabled, ratePct, intervalHours };
   }
 
   if (Object.keys(patch).length === 0) {
