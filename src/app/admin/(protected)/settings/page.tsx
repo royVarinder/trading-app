@@ -21,6 +21,7 @@ type Settings = {
   depositWalletAddress: string;
   withdrawalMin: number;
   withdrawalAdminChargeRate: number;
+  depositIncome: { enabled: boolean; ratePct: number; intervalHours: number };
 };
 
 // Displaying a stored decimal rate (e.g. 0.007) as a percentage via `* 100`
@@ -182,6 +183,65 @@ export default function AdminSettingsPage() {
                 })
               }
             />
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-6 shadow-sm">
+        <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">Deposit Income</h2>
+        <p className="mt-1 text-xs text-[color:var(--fincept-text-muted)]">
+          Every approved deposit earns this rate, automatically, every N hours — independent of investments/staking.
+        </p>
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="flex items-center gap-2">
+            <input
+              id="depositIncomeEnabled"
+              type="checkbox"
+              checked={settings.depositIncome.enabled}
+              onChange={(e) =>
+                setSettings({
+                  ...settings,
+                  depositIncome: { ...settings.depositIncome, enabled: e.target.checked },
+                })
+              }
+            />
+            <label htmlFor="depositIncomeEnabled" className="field-label mb-0">
+              Enabled
+            </label>
+          </div>
+          <div>
+            <label className="field-label">Rate per interval (%)</label>
+            <input
+              type="number"
+              step="0.01"
+              className="field-input"
+              value={settings.depositIncome.ratePct}
+              onChange={(e) =>
+                setSettings({
+                  ...settings,
+                  depositIncome: { ...settings.depositIncome, ratePct: Number(e.target.value) },
+                })
+              }
+            />
+          </div>
+          <div>
+            <label className="field-label">Interval (hours)</label>
+            <input
+              type="number"
+              step="0.01"
+              min="0.01"
+              className="field-input"
+              value={settings.depositIncome.intervalHours}
+              onChange={(e) =>
+                setSettings({
+                  ...settings,
+                  depositIncome: { ...settings.depositIncome, intervalHours: Number(e.target.value) },
+                })
+              }
+            />
+            <p className="mt-1 text-[11px] text-[color:var(--fincept-text-muted)]">
+              e.g. 24 for daily, 1 for hourly, 0.02 (~1 minute) for quick testing.
+            </p>
           </div>
         </div>
       </div>
