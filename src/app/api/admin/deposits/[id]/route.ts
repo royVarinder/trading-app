@@ -32,17 +32,21 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   }
 
   const newStatus = action === "approve" ? "Approved" : "Rejected";
-  await db.collection("deposits").updateOne(
-    { _id: deposit._id },
-    {
-      $set: {
-        status: newStatus,
-        reviewedBy: session.username,
-        reviewedAt: new Date(),
-        rejectionReason: action === "reject" ? rejectionReason || "Not specified" : null,
-      },
-    }
-  );
+  const reviewedAt = new Date();
+  const setFields: Record<string, unknown> = {
+    status: newStatus,
+    reviewedBy: session.username,
+    reviewedAt,
+    rejectionReason: action === "reject" ? rejectionReason || "Not specified" : null,
+  };
+  if (action === "approve") {
+    // Anchors deposit-income accrual (src/lib/accrual.ts#runDepositIncomeAccrual) —
+    // this deposit starts earning from the moment it's approved, not from
+    // when it was originally submitted.
+    setFields.depositIncomeStartAt = reviewedAt;
+    setFields.creditedIntervals = 0;
+  }
+  await db.collection("deposits").updateOne({ _id: deposit._id }, { $set: setFields });
 
   await logAdminAction(db, {
     actor: session.username,
