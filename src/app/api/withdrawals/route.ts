@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/lib/mongodb";
 import { getSession } from "@/lib/session";
 import { getWalletSummary } from "@/lib/accrual";
+import { getAvailableFund } from "@/lib/fund";
 import { getSettings } from "@/lib/settings";
 
 type WithdrawalType = "income" | "investment";
@@ -66,8 +67,17 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: `Minimum withdrawal is $${withdrawalMin}.` }, { status: 400 });
   }
 
-  const summary = await getWalletSummary(session.memberId);
-  const balance = type === "income" ? summary.netIncome : summary.netCapital;
+  const db = await getDb();
+  // "income"-type withdrawals now cash out the wallet balance (deposits +
+  // claimed profit, minus what's invested/staked/already withdrawn) —
+  // claiming profit (see /api/claims) is what feeds this wallet, this
+  // route is just the final real-money-out step. "investment"-type stays
+  // on the older net-capital basis.
+  const [summary, availableFund] = await Promise.all([
+    getWalletSummary(session.memberId),
+    getAvailableFund(db, session.memberId),
+  ]);
+  const balance = type === "income" ? availableFund : summary.netCapital;
   if (amount > balance) {
     return NextResponse.json({ error: "Amount exceeds your available balance." }, { status: 400 });
   }
@@ -75,7 +85,6 @@ export async function POST(req: Request) {
   const adminCharge = Math.round(amount * withdrawalAdminChargeRate * 100) / 100;
   const netAmount = Math.round((amount - adminCharge) * 100) / 100;
 
-  const db = await getDb();
   const doc = {
     memberId: session.memberId,
     username: session.username,

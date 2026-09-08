@@ -58,6 +58,7 @@ export async function getDb(): Promise<Db> {
         ]),
       db.collection("adminActions").createIndex({ createdAt: -1 }),
       db.collection("adjustments").createIndex({ memberId: 1, createdAt: -1 }),
+      db.collection("claims").createIndex({ memberId: 1, createdAt: -1 }),
       db.collection("tickets").createIndex({ status: 1, createdAt: -1 }),
     ]).catch(() => {
       indexesEnsured = false;

@@ -4,8 +4,22 @@ import { SESSION_COOKIE_NAME, ADMIN_SESSION_COOKIE_NAME } from "@/lib/constants"
 const AUTH_PATHS = new Set(["/login", "/signup"]);
 
 export function proxy(req: NextRequest) {
-  const hasSession = Boolean(req.cookies.get(SESSION_COOKIE_NAME)?.value);
   const { pathname } = req.nextUrl;
+
+  // Every /api/* response is dynamic, session-scoped data (wallet
+  // balances, income history, admin lists, ...). Each route.ts already
+  // reads fresh from Mongo on every call, but without an explicit
+  // Cache-Control header the browser was free to reuse a stale response
+  // across client-side navigations (only a hard reload forced a refetch).
+  // This runs before the auth checks below and returns early — every
+  // /api/* route already verifies its own session/role server-side.
+  if (pathname.startsWith("/api/")) {
+    const response = NextResponse.next();
+    response.headers.set("Cache-Control", "no-store, must-revalidate");
+    return response;
+  }
+
+  const hasSession = Boolean(req.cookies.get(SESSION_COOKIE_NAME)?.value);
 
   // "/" is the public marketing landing page — anyone can view it.
   // Signed-in visitors are bounced straight to their dashboard instead.
@@ -40,5 +54,5 @@ export function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/login", "/signup", "/admin/:path*"],
+  matcher: ["/", "/login", "/signup", "/admin/:path*", "/api/:path*"],
 };

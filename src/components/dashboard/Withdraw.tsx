@@ -7,12 +7,10 @@ import { InfoCard } from "@/components/dashboard/shared/InfoCard";
 const MIN_WITHDRAWAL = 10;
 
 type WalletSummary = {
-  totalIncome: number;
-  totalIncomeWithdrawal: number;
-  netIncome: number;
+  availableFund: number;
 };
 
-const EMPTY_WALLET: WalletSummary = { totalIncome: 0, totalIncomeWithdrawal: 0, netIncome: 0 };
+const EMPTY_WALLET: WalletSummary = { availableFund: 0 };
 
 export function Withdraw() {
   const [wallet, setWallet] = useState<WalletSummary>(EMPTY_WALLET);
@@ -44,8 +42,8 @@ export function Withdraw() {
       setError(`Minimum withdrawal is $${MIN_WITHDRAWAL}.`);
       return;
     }
-    if (amount > wallet.netIncome) {
-      setError("Amount exceeds your available net income.");
+    if (amount > wallet.availableFund) {
+      setError("Amount exceeds your available wallet balance.");
       return;
     }
 
@@ -76,18 +74,21 @@ export function Withdraw() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Withdraw" subtitle="Request a payout of your available trading income." />
+      <PageHeader title="Withdraw" subtitle="Request a real-money payout from your wallet balance." />
 
       <div className="max-w-md">
         <InfoCard
           rows={[
-            { label: "Total Income", value: `$${wallet.totalIncome.toFixed(2)}` },
-            { label: "Total Withdrawal", value: `$${wallet.totalIncomeWithdrawal.toFixed(2)}` },
-            { label: "Net Income", value: `$${wallet.netIncome.toFixed(2)}`, valueClassName: "text-emerald-300" },
+            {
+              label: "Available Wallet Balance",
+              value: `$${wallet.availableFund.toFixed(2)}`,
+              valueClassName: "text-emerald-300",
+            },
           ]}
           footer={
             <p className="text-xs text-[color:var(--fincept-text-muted)]">
-              Minimum withdrawal ${MIN_WITHDRAWAL}, 5% admin charge applies
+              Minimum withdrawal ${MIN_WITHDRAWAL}, 0.5% admin charge applies. Claim profit from Investment
+              Withdrawal first if it isn&apos;t in your wallet yet.
             </p>
           }
         />

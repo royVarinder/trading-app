@@ -205,18 +205,66 @@ function buildSummary(direct: RawMember[], allTeam: RawMember[]): TeamSummary {
   };
 }
 
+// Investment-only totals (no staking) — used solely for rank qualification
+// below. This is deliberately separate from fetchInvestedTotals (which
+// merges investments+stakes for the Direct/Level/All Team report pages and
+// dashboard tiles, unchanged by this function).
+async function fetchInvestmentOnlyTotals(db: Db, memberIds: string[]): Promise<Map<string, number>> {
+  if (memberIds.length === 0) return new Map();
+
+  const rows = await db
+    .collection("investments")
+    .aggregate<{ _id: string; total: number }>([
+      { $match: { memberId: { $in: memberIds } } },
+      { $group: { _id: "$memberId", total: { $sum: "$amount" } } },
+    ])
+    .toArray();
+
+  const totals = new Map<string, number>();
+  for (const row of rows) totals.set(row._id, row.total);
+  return totals;
+}
+
+/**
+ * Rank qualification totals — deliberately distinct from the Direct/Level/
+ * All Team report pages (getTeamSnapshot), which keep showing whole-
+ * multi-level-downline totals including staking, unchanged.
+ *
+ * - selfInvestment: the member's own investment amount (staking excluded).
+ * - directBusiness: the member's single best-performing direct referral's
+ *   own investment (staking excluded, no downline/subtree involved).
+ * - teamBusiness: the sum of ALL the member's direct referrals' own
+ *   investment (staking excluded) — includes the "best" one above, so the
+ *   remaining direct referrals together must cover the gap between
+ *   directBusiness and teamBusiness.
+ *
+ * There is no minimum direct-referral count — a member with zero direct
+ * referrals simply has directBusiness/teamBusiness of 0 and won't qualify
+ * for any rank that requires more than that.
+ */
 export async function getBusinessTotals(
   memberId: string
 ): Promise<{ selfInvestment: number; directBusiness: number; teamBusiness: number }> {
   const db = await getDb();
-  const [snapshot, selfTotals] = await Promise.all([
-    getTeamSnapshot(memberId),
-    fetchInvestedTotals(db, [memberId]),
+
+  const directReferrals = await db
+    .collection<{ memberId: string }>("users")
+    .find({ sponsorId: memberId }, { projection: { memberId: 1 } })
+    .toArray();
+  const directIds = directReferrals.map((d) => d.memberId);
+
+  const [selfTotals, directTotals] = await Promise.all([
+    fetchInvestmentOnlyTotals(db, [memberId]),
+    fetchInvestmentOnlyTotals(db, directIds),
   ]);
+
+  const directAmounts = directIds.map((id) => directTotals.get(id) ?? 0);
+  const directBusiness = directAmounts.length > 0 ? Math.max(...directAmounts) : 0;
+  const teamBusiness = directAmounts.reduce((sum, amount) => sum + amount, 0);
 
   return {
     selfInvestment: selfTotals.get(memberId) ?? 0,
-    directBusiness: snapshot.summary.directBusiness,
-    teamBusiness: snapshot.summary.teamBusiness,
+    directBusiness,
+    teamBusiness,
   };
 }

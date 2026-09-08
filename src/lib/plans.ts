@@ -30,8 +30,14 @@ export type LeadershipRank = {
   level: number;
   rank: string;
   commissionPct: number;
-  selfInvestment: number;
+  selfInvestment: number; // member's own investment (staking excluded)
+  // Member's single best-performing direct referral's own investment
+  // (staking excluded, no downline/subtree involved) must reach this.
   directBusiness: number;
+  // The SUM of ALL the member's direct referrals' own investment (staking
+  // excluded) must reach this — includes the "best" one above, so the
+  // remaining direct referrals together must cover the rest. No minimum
+  // referral count. See src/lib/team.ts#getBusinessTotals.
   teamBusiness: number;
   monthlyReward: number;
 };

@@ -290,14 +290,19 @@ export default function AdminSettingsPage() {
 
       <div className="overflow-x-auto rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-6 shadow-sm">
         <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">Leadership Ranks</h2>
+        <p className="mt-1 text-xs text-[color:var(--fincept-text-muted)]">
+          Investment only (staking excluded). Best Direct Referral = your single top-investing direct referral&apos;s
+          own investment. All Directs Combined = the sum of every direct referral&apos;s own investment. No minimum
+          referral count.
+        </p>
         <table className="mt-4 w-full min-w-[860px] text-left text-sm">
           <thead>
             <tr className="text-xs font-semibold uppercase tracking-wide text-[color:var(--fincept-text-muted)]">
               <th className="px-2 py-2">Rank</th>
               <th className="px-2 py-2">Commission (%)</th>
               <th className="px-2 py-2">Self Inv. ($)</th>
-              <th className="px-2 py-2">Direct Biz. ($)</th>
-              <th className="px-2 py-2">Team Biz. ($)</th>
+              <th className="px-2 py-2">Best Direct Referral ($)</th>
+              <th className="px-2 py-2">All Directs Combined ($)</th>
               <th className="px-2 py-2">Monthly Reward ($)</th>
             </tr>
           </thead>
