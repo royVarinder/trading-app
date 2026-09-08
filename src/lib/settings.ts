@@ -14,6 +14,7 @@ export type PlatformSettings = {
   depositWalletAddress: string;
   withdrawalMin: number;
   withdrawalAdminChargeRate: number;
+  depositIncome: { enabled: boolean; ratePct: number; intervalHours: number };
 };
 
 // The values src/lib/plans.ts previously hardcoded, now the fallback used
@@ -26,6 +27,7 @@ export const DEFAULT_SETTINGS: PlatformSettings = {
   depositWalletAddress: "0xDDC09476D30Fae1B08fC68fe7F65949a1B648954",
   withdrawalMin: 10,
   withdrawalAdminChargeRate: 0.05,
+  depositIncome: { enabled: true, ratePct: 0.5, intervalHours: 24 },
 };
 
 const SETTINGS_ID = "platform";
@@ -48,6 +50,7 @@ export async function getSettings(): Promise<PlatformSettings> {
     depositWalletAddress: doc?.depositWalletAddress ?? DEFAULT_SETTINGS.depositWalletAddress,
     withdrawalMin: doc?.withdrawalMin ?? DEFAULT_SETTINGS.withdrawalMin,
     withdrawalAdminChargeRate: doc?.withdrawalAdminChargeRate ?? DEFAULT_SETTINGS.withdrawalAdminChargeRate,
+    depositIncome: doc?.depositIncome ?? DEFAULT_SETTINGS.depositIncome,
   };
 
   cache = { value, expiresAt: Date.now() + CACHE_TTL_MS };

@@ -75,6 +75,16 @@ export async function PATCH(req: Request) {
     patch.withdrawalAdminChargeRate = rate;
   }
 
+  if (body.depositIncome) {
+    const enabled = Boolean(body.depositIncome.enabled);
+    const ratePct = Number(body.depositIncome.ratePct);
+    const intervalHours = Number(body.depositIncome.intervalHours);
+    if (!Number.isFinite(ratePct) || ratePct < 0 || !Number.isFinite(intervalHours) || intervalHours <= 0) {
+      return NextResponse.json({ error: "Invalid deposit income values." }, { status: 400 });
+    }
+    patch.depositIncome = { enabled, ratePct, intervalHours };
+  }
+
   if (Object.keys(patch).length === 0) {
     return NextResponse.json({ error: "No valid settings provided." }, { status: 400 });
   }
