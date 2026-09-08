@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/session";
 import { HomeShell } from "@/components/HomeShell";
-import { runDailyAccrual } from "@/lib/accrual";
+import { runAllAccruals } from "@/lib/accrual";
 
 export default async function DashboardPage() {
   const session = await getSession();
@@ -9,7 +9,7 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  await runDailyAccrual();
+  await runAllAccruals();
 
   return <HomeShell username={session.username} memberId={session.memberId} />;
 }

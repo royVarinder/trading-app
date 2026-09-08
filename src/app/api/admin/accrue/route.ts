@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/mongodb";
 import { requireAdmin } from "@/lib/adminGuard";
-import { runDailyAccrual } from "@/lib/accrual";
+import { runAllAccruals } from "@/lib/accrual";
 import { logAdminAction } from "@/lib/audit";
 
 // Manual fallback for the daily accrual job — it normally runs lazily on
@@ -13,7 +13,7 @@ export async function POST() {
   if ("response" in guard) return guard.response;
   const { session } = guard;
 
-  await runDailyAccrual();
+  await runAllAccruals();
 
   const db = await getDb();
   await logAdminAction(db, { actor: session.username, action: "accrual.manual-run" });

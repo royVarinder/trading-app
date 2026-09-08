@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { runDailyAccrual } from "@/lib/accrual";
+import { runAllAccruals } from "@/lib/accrual";
 
 export async function GET(req: Request) {
   const secret = process.env.CRON_SECRET;
@@ -10,6 +10,6 @@ export async function GET(req: Request) {
     }
   }
 
-  await runDailyAccrual();
+  await runAllAccruals();
   return NextResponse.json({ ok: true });
 }
