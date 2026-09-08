@@ -32,6 +32,18 @@ function toPercentDisplay(rate: number): number {
   return Math.round(rate * 100 * 1e6) / 1e6;
 }
 
+// The deposit income interval is always stored/sent as fractional hours
+// (matches PlatformSettings.depositIncome.intervalHours and the accrual
+// engine's math in src/lib/accrual.ts) — this is purely a display/input
+// convenience so an admin can type "30" + "Minutes" instead of computing
+// 0.5 hours by hand. Converting through hours both ways keeps the stored
+// value exact regardless of which unit is currently selected.
+type IntervalUnit = "minutes" | "hours" | "days";
+const UNIT_TO_HOURS: Record<IntervalUnit, number> = { minutes: 1 / 60, hours: 1, days: 24 };
+function toUnitDisplay(intervalHours: number, unit: IntervalUnit): number {
+  return Math.round((intervalHours / UNIT_TO_HOURS[unit]) * 1e6) / 1e6;
+}
+
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -39,6 +51,7 @@ export default function AdminSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [forbidden, setForbidden] = useState(false);
+  const [intervalUnit, setIntervalUnit] = useState<IntervalUnit>("hours");
 
   useEffect(() => {
     fetch("/api/admin/settings")
@@ -225,22 +238,36 @@ export default function AdminSettingsPage() {
             />
           </div>
           <div>
-            <label className="field-label">Interval (hours)</label>
-            <input
-              type="number"
-              step="0.01"
-              min="0.01"
-              className="field-input"
-              value={settings.depositIncome.intervalHours}
-              onChange={(e) =>
-                setSettings({
-                  ...settings,
-                  depositIncome: { ...settings.depositIncome, intervalHours: Number(e.target.value) },
-                })
-              }
-            />
+            <label className="field-label">Interval</label>
+            <div className="flex gap-2">
+              <input
+                type="number"
+                step="0.01"
+                min="0.01"
+                className="field-input"
+                value={toUnitDisplay(settings.depositIncome.intervalHours, intervalUnit)}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    depositIncome: {
+                      ...settings.depositIncome,
+                      intervalHours: Number(e.target.value) * UNIT_TO_HOURS[intervalUnit],
+                    },
+                  })
+                }
+              />
+              <select
+                className="field-input w-auto"
+                value={intervalUnit}
+                onChange={(e) => setIntervalUnit(e.target.value as IntervalUnit)}
+              >
+                <option value="minutes">Minutes</option>
+                <option value="hours">Hours</option>
+                <option value="days">Days</option>
+              </select>
+            </div>
             <p className="mt-1 text-[11px] text-[color:var(--fincept-text-muted)]">
-              e.g. 24 for daily, 1 for hourly, 0.02 (~1 minute) for quick testing.
+              e.g. 24 hours for daily, 1 hour for hourly, 1 minute for quick testing.
             </p>
           </div>
         </div>
