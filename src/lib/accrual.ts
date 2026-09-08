@@ -237,6 +237,7 @@ export type WalletSummary = {
   totalSelfInvestment: number;
   totalStakingBonus: number;
   totalInvestmentBonus: number;
+  totalDepositIncome: number;
   totalLeadership: number;
   totalRewards: number;
   totalIncome: number;
@@ -254,6 +255,7 @@ export async function getWalletSummary(memberId: string): Promise<WalletSummary>
     stakePrincipal,
     totalStakingBonus,
     totalInvestmentBonus,
+    totalDepositIncome,
     totalLeadership,
     totalRewards,
     totalIncomeWithdrawal,
@@ -264,6 +266,7 @@ export async function getWalletSummary(memberId: string): Promise<WalletSummary>
     sumField(db, "stakes", { memberId }, "amount"),
     sumField(db, "bonusLedger", { memberId, positionType: "staking" }, "income"),
     sumField(db, "bonusLedger", { memberId, positionType: "investment" }, "income"),
+    sumField(db, "bonusLedger", { memberId, positionType: "deposit" }, "income"),
     sumField(db, "leadershipLedger", { beneficiaryMemberId: memberId }, "income"),
     sumField(db, "rewardLedger", { memberId }, "amount"),
     sumField(
@@ -282,7 +285,9 @@ export async function getWalletSummary(memberId: string): Promise<WalletSummary>
   ]);
 
   const totalSelfInvestment = round2(investmentPrincipal + stakePrincipal);
-  const totalIncome = round2(totalStakingBonus + totalInvestmentBonus + totalLeadership + totalRewards);
+  const totalIncome = round2(
+    totalStakingBonus + totalInvestmentBonus + totalDepositIncome + totalLeadership + totalRewards
+  );
   const netIncome = Math.max(0, round2(totalIncome - totalIncomeWithdrawal));
   const dividendsEarned = round2(totalStakingBonus + totalInvestmentBonus);
   const netCapital = Math.max(0, round2(totalSelfInvestment - dividendsEarned - totalCapitalWithdrawal));
@@ -292,6 +297,7 @@ export async function getWalletSummary(memberId: string): Promise<WalletSummary>
     totalSelfInvestment,
     totalStakingBonus: round2(totalStakingBonus),
     totalInvestmentBonus: round2(totalInvestmentBonus),
+    totalDepositIncome: round2(totalDepositIncome),
     totalLeadership: round2(totalLeadership),
     totalRewards: round2(totalRewards),
     totalIncome,
@@ -300,4 +306,85 @@ export async function getWalletSummary(memberId: string): Promise<WalletSummary>
     totalCapitalWithdrawal: round2(totalCapitalWithdrawal),
     netCapital,
   };
+}
+
+/**
+ * Credits deposit income independently for every Approved deposit, based on
+ * how many admin-configured intervals have elapsed since that deposit's own
+ * depositIncomeStartAt — not a shared calendar-day watermark like
+ * runTradingBonusPhase. Simple interest: each newly-elapsed interval is
+ * worth `amount * (ratePct / 100)`, so it doesn't matter whether this runs
+ * every minute or once a week — the total at any instant is identical,
+ * only how it's batched into bonusLedger entries differs.
+ *
+ * The `date` field on each ledger entry is deliberately NOT wall-clock time.
+ * It's derived from (depositIncomeStartAt, totalDueIntervals) so that two
+ * concurrent runs computing the same due-interval count for the same
+ * deposit collide on the bonusLedger{positionId,date} unique index — the
+ * second insert throws a duplicate-key error, caught below and treated as
+ * a no-op, the same guard runTradingBonusPhase already relies on for
+ * investment/staking positions.
+ */
+export async function runDepositIncomeAccrual(): Promise<void> {
+  const db = await getDb();
+  const { depositIncome } = await getSettings();
+  if (!depositIncome.enabled) return;
+
+  // Backfill deposits approved before this feature existed — they have no
+  // depositIncomeStartAt yet. Only touches docs missing the field, so this
+  // is a cheap no-op on every subsequent call.
+  await db.collection("deposits").updateMany(
+    { status: "Approved", depositIncomeStartAt: { $exists: false } },
+    [{ $set: { depositIncomeStartAt: "$createdAt", creditedIntervals: 0 } }]
+  );
+
+  const intervalMs = depositIncome.intervalHours * 3600_000;
+  const now = Date.now();
+
+  const deposits = await db
+    .collection("deposits")
+    .find({ status: "Approved" })
+    .toArray();
+
+  for (const deposit of deposits) {
+    const startAt = new Date(deposit.depositIncomeStartAt).getTime();
+    const creditedIntervals = (deposit.creditedIntervals as number | undefined) ?? 0;
+    const totalDueIntervals = Math.floor((now - startAt) / intervalMs);
+    const newIntervals = totalDueIntervals - creditedIntervals;
+    if (newIntervals < 1) continue;
+
+    const income = round2((deposit.amount as number) * (depositIncome.ratePct / 100) * newIntervals);
+    const dueAt = new Date(startAt + totalDueIntervals * intervalMs);
+
+    try {
+      await db.collection("bonusLedger").insertOne({
+        memberId: deposit.memberId,
+        positionId: deposit._id,
+        positionType: "deposit",
+        principal: deposit.amount,
+        rate: depositIncome.ratePct / 100,
+        income,
+        intervalsCredited: newIntervals,
+        date: dueAt.toISOString(),
+        createdAt: new Date(),
+      });
+    } catch (err: unknown) {
+      if (typeof err === "object" && err !== null && "code" in err && err.code === 11000) {
+        continue; // another concurrent run already credited up to this interval
+      }
+      throw err;
+    }
+
+    await db
+      .collection("deposits")
+      .updateOne({ _id: deposit._id }, { $max: { creditedIntervals: totalDueIntervals } });
+  }
+}
+
+/** Single entrypoint the three trigger points (dashboard load, admin manual
+ * trigger, external cron) call — runs the existing daily trading-bonus/
+ * monthly-reward phases plus the new deposit income phase. */
+export async function runAllAccruals(): Promise<void> {
+  await runDailyAccrual();
+  await runDepositIncomeAccrual();
 }
