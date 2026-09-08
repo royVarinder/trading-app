@@ -22,6 +22,7 @@ export type MenuId =
   | "staking-id"
   | "staking-report"
   | "income-staking-bonus"
+  | "income-deposit-bonus"
   | "income-inv-bonus"
   | "income-all-bonus"
   | "income-leadership"
@@ -92,6 +93,7 @@ export const MENU: MenuEntry[] = [
     label: "Income Report",
     icon: ReportIcon,
     children: [
+      { id: "income-deposit-bonus", label: "Deposit Income" },
       { id: "income-staking-bonus", label: "Staking Trading Bonus" },
       { id: "income-inv-bonus", label: "Inv Trading Bonus" },
       { id: "income-all-bonus", label: "All Invs & Staking Bonus" },

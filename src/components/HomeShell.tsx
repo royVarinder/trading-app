@@ -17,6 +17,7 @@ import { InvestmentReport } from "@/components/dashboard/InvestmentReport";
 import { StakingId } from "@/components/dashboard/StakingId";
 import { StakingReport } from "@/components/dashboard/StakingReport";
 import { IncomeStakingBonus } from "@/components/dashboard/IncomeStakingBonus";
+import { IncomeDepositBonus } from "@/components/dashboard/IncomeDepositBonus";
 import { IncomeInvBonus } from "@/components/dashboard/IncomeInvBonus";
 import { IncomeAllBonus } from "@/components/dashboard/IncomeAllBonus";
 import { IncomeLeadership } from "@/components/dashboard/IncomeLeadership";
@@ -55,6 +56,7 @@ export function HomeShell({ username, memberId }: { username: string; memberId: 
     "staking-id": <StakingId memberId={memberId} />,
     "staking-report": <StakingReport memberId={memberId} />,
     "income-staking-bonus": <IncomeStakingBonus memberId={memberId} />,
+    "income-deposit-bonus": <IncomeDepositBonus memberId={memberId} />,
     "income-inv-bonus": <IncomeInvBonus memberId={memberId} />,
     "income-all-bonus": <IncomeAllBonus memberId={memberId} />,
     "income-leadership": <IncomeLeadership memberId={memberId} />,

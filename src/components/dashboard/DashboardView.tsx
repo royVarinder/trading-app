@@ -22,6 +22,7 @@ type WalletSummary = {
   totalSelfInvestment: number;
   totalStakingBonus: number;
   totalInvestmentBonus: number;
+  totalDepositIncome: number;
   totalLeadership: number;
   totalRewards: number;
   totalIncome: number;
@@ -78,6 +79,7 @@ const EMPTY_WALLET: WalletSummary = {
   totalSelfInvestment: 0,
   totalStakingBonus: 0,
   totalInvestmentBonus: 0,
+  totalDepositIncome: 0,
   totalLeadership: 0,
   totalRewards: 0,
   totalIncome: 0,
@@ -119,6 +121,7 @@ export function DashboardView({ memberId }: { memberId: string }) {
     { label: "Total Team Business", value: `$${summary.teamBusiness.toFixed(2)}`, icon: LayersIcon },
     { label: "Staking Trading Bonus", value: `$${wallet.totalStakingBonus.toFixed(2)}`, icon: TrendingUpIcon },
     { label: "Investment Trading Bonus", value: `$${wallet.totalInvestmentBonus.toFixed(2)}`, icon: ReportIcon },
+    { label: "Deposit Income", value: `$${wallet.totalDepositIncome.toFixed(2)}`, icon: DepositIcon },
     { label: "Leadership Bonus", value: `$${wallet.totalLeadership.toFixed(2)}`, icon: ShieldIcon },
     { label: "Total Income", value: `$${wallet.totalIncome.toFixed(2)}`, icon: DepositIcon },
     { label: "Total Withdrawal", value: `$${wallet.totalIncomeWithdrawal.toFixed(2)}`, icon: WithdrawIcon },
