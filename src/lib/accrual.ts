@@ -93,6 +93,45 @@ async function creditPosition(
   return { memberId: position.memberId, income };
 }
 
+// Direct referrals' current ranks — the rank-compression check below only
+// looks at direct referrals ("legs"), consistent with the qualifying-leg
+// rule in src/lib/plans.ts.
+async function getDirectReferralRanks(db: Db, memberId: string): Promise<LeadershipRank[]> {
+  const directs = await db
+    .collection<{ memberId: string }>("users")
+    .find({ sponsorId: memberId }, { projection: { memberId: 1 } })
+    .toArray();
+
+  const ranks = await Promise.all(directs.map((d) => computeRank(d.memberId)));
+  return ranks.filter((r): r is LeadershipRank => r !== null);
+}
+
+/**
+ * Rank compression: an upline's commission rate on an override is reduced
+ * by the commissionPct of every rank level <= their own that at least one
+ * of their direct referrals ("legs") has independently achieved — counted
+ * once per distinct level reached, not once per referral. So:
+ * - A Promoter whose own leg also becomes a Promoter has their rate cut by
+ *   exactly the Promoter commissionPct — fully cancelling it (same rank).
+ * - A Performer whose leg becomes a Promoter (a lower rank) has their rate
+ *   cut by just the Promoter commissionPct, keeping the differential.
+ * - A Manager whose legs include both a Promoter and a Performer has their
+ *   rate cut by Promoter's + Performer's commissionPct combined.
+ * This applies the same way at every rank up the tree. Floored at 0 — a
+ * rank never pays a negative commission.
+ */
+async function getEffectiveCommissionPct(db: Db, memberId: string, rank: LeadershipRank): Promise<number> {
+  const legRanks = await getDirectReferralRanks(db, memberId);
+
+  const deductionByLevel = new Map<number, number>();
+  for (const legRank of legRanks) {
+    if (legRank.level <= rank.level) deductionByLevel.set(legRank.level, legRank.commissionPct);
+  }
+  const deduction = [...deductionByLevel.values()].reduce((sum, pct) => sum + pct, 0);
+
+  return Math.max(0, round2(rank.commissionPct - deduction));
+}
+
 async function creditLeadershipOverrides(
   db: Db,
   sourceMemberId: string,
@@ -122,22 +161,29 @@ async function creditLeadershipOverrides(
     level += 1;
     const rank = await computeRank(ancestor.memberId);
 
-    if (rank && rank.commissionPct > 0) {
-      const income = round2((rank.commissionPct / 100) * refIncome);
-      await db.collection("leadershipLedger").insertOne({
-        beneficiaryMemberId: ancestor.memberId,
-        beneficiaryRank: rank.rank,
-        commissionPct: rank.commissionPct,
-        sourceMemberId,
-        sourceUsername,
-        level,
-        positionType,
-        refPrincipal,
-        refIncome,
-        income,
-        date,
-        createdAt: new Date(),
-      });
+    if (rank) {
+      const effectiveCommissionPct = await getEffectiveCommissionPct(db, ancestor.memberId, rank);
+
+      if (effectiveCommissionPct > 0) {
+        const income = round2((effectiveCommissionPct / 100) * refIncome);
+        await db.collection("leadershipLedger").insertOne({
+          beneficiaryMemberId: ancestor.memberId,
+          beneficiaryRank: rank.rank,
+          commissionPct: effectiveCommissionPct,
+          // The rank's uncompressed rate, kept for audit — commissionPct
+          // above is what actually paid out (see getEffectiveCommissionPct).
+          grossCommissionPct: rank.commissionPct,
+          sourceMemberId,
+          sourceUsername,
+          level,
+          positionType,
+          refPrincipal,
+          refIncome,
+          income,
+          date,
+          createdAt: new Date(),
+        });
+      }
     }
 
     currentMemberId = ancestor.memberId;
@@ -278,8 +324,13 @@ export async function getWalletSummary(memberId: string): Promise<WalletSummary>
   const totalSelfInvestment = round2(investmentPrincipal + stakePrincipal);
   const totalIncome = round2(totalStakingBonus + totalInvestmentBonus + totalLeadership + totalRewards);
   const netIncome = Math.max(0, round2(totalIncome - totalIncomeWithdrawal));
-  const dividendsEarned = round2(totalStakingBonus + totalInvestmentBonus);
-  const netCapital = Math.max(0, round2(totalSelfInvestment - dividendsEarned - totalCapitalWithdrawal));
+  // Staking principal is never withdrawable — only staking *profit* is (via
+  // claims -> availableFund -> the "income" withdrawal type, unaffected by
+  // this). netCapital therefore only ever draws down the Startup Plan
+  // (investment) principal, minus dividends already earned on it — stakes
+  // are deliberately excluded from this formula entirely, even though
+  // totalSelfInvestment above still reports them for display purposes.
+  const netCapital = Math.max(0, round2(investmentPrincipal - totalInvestmentBonus - totalCapitalWithdrawal));
 
   return {
     rank: rank?.rank ?? "No-Rank",

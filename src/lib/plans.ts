@@ -54,20 +54,40 @@ export const LEADERSHIP_RANKS: LeadershipRank[] = [
   { level: 6, rank: "Crown Ambassador", commissionPct: 120, selfInvestment: 25000, directBusiness: 50000, teamBusiness: 10000000, monthlyReward: 30000 },
 ];
 
+// Per-leg stats for the qualifying-leg check in rankForTotals below — one
+// entry per direct referral. See src/lib/team.ts#getBusinessTotals.
+export type LegStats = {
+  memberId: string;
+  selfInvested: boolean; // this leg has made at least one investment of their own
+  teamInvestment: number; // sum of what THIS LEG'S OWN downline invested (staking excluded) — excludes the leg's own investment above, that's tracked separately
+};
+
+// A leg qualifies for `rank` when it has invested itself AND its own
+// downline has collectively invested at least the rank's directBusiness
+// figure — no separate referral-count minimum, no per-rank "how many legs"
+// setting. Only one qualifying leg is ever required (see rankForTotals).
+export function isQualifiedLeg(leg: LegStats, rank: LeadershipRank): boolean {
+  return leg.selfInvested && leg.teamInvestment >= rank.directBusiness;
+}
+
 export function rankForTotals(
   totals: {
     selfInvestment: number;
     directBusiness: number;
     teamBusiness: number;
+    legs: LegStats[];
   },
   ranks: LeadershipRank[] = LEADERSHIP_RANKS
 ): LeadershipRank | null {
   let best: LeadershipRank | null = null;
   for (const rank of ranks) {
+    const hasQualifiedLeg = totals.legs.some((leg) => isQualifiedLeg(leg, rank));
+
     if (
       totals.selfInvestment >= rank.selfInvestment &&
       totals.directBusiness >= rank.directBusiness &&
-      totals.teamBusiness >= rank.teamBusiness
+      totals.teamBusiness >= rank.teamBusiness &&
+      hasQualifiedLeg
     ) {
       best = rank;
     }

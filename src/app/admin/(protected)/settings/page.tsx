@@ -292,8 +292,9 @@ export default function AdminSettingsPage() {
         <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">Leadership Ranks</h2>
         <p className="mt-1 text-xs text-[color:var(--fincept-text-muted)]">
           Investment only (staking excluded). Best Direct Referral = your single top-investing direct referral&apos;s
-          own investment. All Directs Combined = the sum of every direct referral&apos;s own investment. No minimum
-          referral count.
+          own investment. All Directs Combined = the sum of every direct referral&apos;s own investment. Rank-up also
+          requires at least one direct referral who has invested themselves AND whose own downline has invested at
+          least the Best Direct Referral ($) figure below.
         </p>
         <table className="mt-4 w-full min-w-[860px] text-left text-sm">
           <thead>

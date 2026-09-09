@@ -13,6 +13,7 @@ type RankRow = {
   selfInvestment: number;
   directBusiness: number;
   teamBusiness: number;
+  hasQualifiedLeg: boolean;
   monthlyReward: number;
   status: "Achieved" | "Pending";
 };
@@ -51,6 +52,7 @@ export function IncomeMonthlyReward() {
       selfInv: `$${r.selfInvestment.toLocaleString()}`,
       direct: `$${r.directBusiness.toLocaleString()}`,
       team: `$${r.teamBusiness.toLocaleString()}`,
+      leg: r.hasQualifiedLeg ? "Yes" : "No",
       reward: `$${r.monthlyReward.toLocaleString()}`,
       status: <StatusBadge status={r.status} />,
     })) ?? [];
@@ -60,7 +62,7 @@ export function IncomeMonthlyReward() {
       <PageHeader title="Monthly / Reward Bonus" subtitle="Leadership ranks and the qualification targets for each." />
 
       {ranks === null && !error ? (
-        <TableSkeleton columns={8} rows={6} />
+        <TableSkeleton columns={9} rows={6} />
       ) : error ? (
         <p className="rounded-2xl border border-red-100 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-300">
           {error}
@@ -74,6 +76,7 @@ export function IncomeMonthlyReward() {
             { key: "selfInv", label: "Self Investment" },
             { key: "direct", label: "Direct Business" },
             { key: "team", label: "Team Business" },
+            { key: "leg", label: "Qualifying Leg?" },
             { key: "reward", label: "Monthly Reward" },
             { key: "status", label: "Status" },
           ]}

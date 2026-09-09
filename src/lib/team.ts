@@ -1,6 +1,7 @@
 import type { Db } from "mongodb";
 import { getDb } from "@/lib/mongodb";
 import type { LevelSummary, TeamMemberSummary, TeamSnapshot, TeamSummary } from "@/lib/team-types";
+import type { LegStats } from "@/lib/plans";
 
 type DownlineDoc = {
   memberId: string;
@@ -225,6 +226,49 @@ async function fetchInvestmentOnlyTotals(db: Db, memberIds: string[]): Promise<M
   return totals;
 }
 
+// memberIds of every descendant (any depth) under `memberId` — a lighter
+// version of fetchDownline above for callers that only need the ids, not
+// the full member docs.
+async function fetchDownlineMemberIds(db: Db, memberId: string): Promise<string[]> {
+  const [root] = await db
+    .collection("users")
+    .aggregate<{ downlineIds: string[] }>([
+      { $match: { memberId } },
+      {
+        $graphLookup: {
+          from: "users",
+          startWith: "$memberId",
+          connectFromField: "memberId",
+          connectToField: "sponsorId",
+          as: "downline",
+        },
+      },
+      { $project: { _id: 0, downlineIds: "$downline.memberId" } },
+    ])
+    .toArray();
+
+  return root?.downlineIds ?? [];
+}
+
+// One leg's qualification stats (see src/lib/plans.ts#isQualifiedLeg). A
+// "leg" is a single direct referral: selfInvested is whether that referral
+// has invested anything themselves, and teamInvestment is the total their
+// OWN downline (the people they referred) has invested — staking excluded,
+// same investment-only convention as directBusiness/teamBusiness below.
+// Deliberately excludes the leg's own investment from teamInvestment; that
+// is tracked separately via selfInvested.
+async function fetchLegStats(db: Db, directId: string): Promise<LegStats> {
+  const [selfTotals, downlineIds] = await Promise.all([
+    fetchInvestmentOnlyTotals(db, [directId]),
+    fetchDownlineMemberIds(db, directId),
+  ]);
+
+  const downlineTotals = await fetchInvestmentOnlyTotals(db, downlineIds);
+  const teamInvestment = [...downlineTotals.values()].reduce((sum, amount) => sum + amount, 0);
+
+  return { memberId: directId, selfInvested: (selfTotals.get(directId) ?? 0) > 0, teamInvestment };
+}
+
 /**
  * Rank qualification totals — deliberately distinct from the Direct/Level/
  * All Team report pages (getTeamSnapshot), which keep showing whole-
@@ -237,6 +281,9 @@ async function fetchInvestmentOnlyTotals(db: Db, memberIds: string[]): Promise<M
  *   investment (staking excluded) — includes the "best" one above, so the
  *   remaining direct referrals together must cover the gap between
  *   directBusiness and teamBusiness.
+ * - legs: per-direct-referral stats (self-invested? + that leg's own
+ *   downline's investment) used to evaluate the qualifying-leg gate — see
+ *   src/lib/plans.ts#rankForTotals / isQualifiedLeg.
  *
  * There is no minimum direct-referral count — a member with zero direct
  * referrals simply has directBusiness/teamBusiness of 0 and won't qualify
@@ -244,7 +291,7 @@ async function fetchInvestmentOnlyTotals(db: Db, memberIds: string[]): Promise<M
  */
 export async function getBusinessTotals(
   memberId: string
-): Promise<{ selfInvestment: number; directBusiness: number; teamBusiness: number }> {
+): Promise<{ selfInvestment: number; directBusiness: number; teamBusiness: number; legs: LegStats[] }> {
   const db = await getDb();
 
   const directReferrals = await db
@@ -253,9 +300,10 @@ export async function getBusinessTotals(
     .toArray();
   const directIds = directReferrals.map((d) => d.memberId);
 
-  const [selfTotals, directTotals] = await Promise.all([
+  const [selfTotals, directTotals, legs] = await Promise.all([
     fetchInvestmentOnlyTotals(db, [memberId]),
     fetchInvestmentOnlyTotals(db, directIds),
+    Promise.all(directIds.map((id) => fetchLegStats(db, id))),
   ]);
 
   const directAmounts = directIds.map((id) => directTotals.get(id) ?? 0);
@@ -266,5 +314,6 @@ export async function getBusinessTotals(
     selfInvestment: selfTotals.get(memberId) ?? 0,
     directBusiness,
     teamBusiness,
+    legs,
   };
 }
