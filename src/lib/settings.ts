@@ -28,7 +28,7 @@ export const DEFAULT_SETTINGS: PlatformSettings = {
   leadershipRanks: DEFAULT_LEADERSHIP_RANKS,
   depositWalletAddress: "0xDDC09476D30Fae1B08fC68fe7F65949a1B648954",
   withdrawalMin: 10,
-  withdrawalAdminChargeRate: 0.005,
+  withdrawalAdminChargeRate: 0.05,
 };
 
 const SETTINGS_ID = "platform";

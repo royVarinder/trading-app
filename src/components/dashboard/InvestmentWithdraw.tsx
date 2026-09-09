@@ -8,7 +8,7 @@ type ClaimSummary = {
   totalInvested: number;
   totalStaked: number;
   investmentProfit: number;
-  completedStakingProfit: number;
+  stakingProfit: number;
   leadershipProfit: number;
   totalClaimed: number;
   claimable: number;
@@ -18,7 +18,7 @@ const EMPTY_SUMMARY: ClaimSummary = {
   totalInvested: 0,
   totalStaked: 0,
   investmentProfit: 0,
-  completedStakingProfit: 0,
+  stakingProfit: 0,
   leadershipProfit: 0,
   totalClaimed: 0,
   claimable: 0,
@@ -84,10 +84,7 @@ export function InvestmentWithdraw() {
             { label: "Total Invested", value: `$${summary.totalInvested.toFixed(2)}` },
             { label: "Total Staking Invested", value: `$${summary.totalStaked.toFixed(2)}` },
             { label: "Investment Profit", value: `$${summary.investmentProfit.toFixed(2)}` },
-            {
-              label: "Staking Profit (completed only)",
-              value: `$${summary.completedStakingProfit.toFixed(2)}`,
-            },
+            { label: "Staking Profit", value: `$${summary.stakingProfit.toFixed(2)}` },
             { label: "Leadership Profit", value: `$${summary.leadershipProfit.toFixed(2)}` },
             { label: "Already Claimed", value: `$${summary.totalClaimed.toFixed(2)}` },
             {

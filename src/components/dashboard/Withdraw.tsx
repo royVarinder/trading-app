@@ -87,7 +87,7 @@ export function Withdraw() {
           ]}
           footer={
             <p className="text-xs text-[color:var(--fincept-text-muted)]">
-              Minimum withdrawal ${MIN_WITHDRAWAL}, 0.5% admin charge applies. Claim profit from Investment
+              Minimum withdrawal ${MIN_WITHDRAWAL}, 5% admin charge applies. Claim profit from Investment
               Withdrawal first if it isn&apos;t in your wallet yet.
             </p>
           }

@@ -33,7 +33,7 @@ export async function POST() {
     username: session.username,
     amount: summary.claimable,
     investmentProfit: summary.investmentProfit,
-    stakingProfit: summary.completedStakingProfit,
+    stakingProfit: summary.stakingProfit,
     leadershipProfit: summary.leadershipProfit,
     createdAt: new Date(),
   };
