@@ -111,7 +111,7 @@ export default function AdminDashboardPage() {
             ))}
           </div>
 
-          <div className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-5 shadow-sm">
+          {/* <div className="rounded-2xl border border-[color:var(--fincept-border)] bg-[color:var(--fincept-card)] p-5 shadow-sm">
             <h2 className="text-sm font-semibold text-[color:var(--fincept-text)]">Daily Accrual Engine</h2>
             <p className="mt-2 text-sm text-[color:var(--fincept-text-muted)]">
               Last run:{" "}
@@ -128,7 +128,7 @@ export default function AdminDashboardPage() {
               </button>
               {ranMessage && <span className="text-sm font-medium text-emerald-300">{ranMessage}</span>}
             </div>
-          </div>
+          </div> */}
         </>
       ) : null}
     </div>
