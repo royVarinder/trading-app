@@ -381,7 +381,21 @@ export async function runInvestmentIncomeAccrual(): Promise<void> {
     [{ $set: { investmentIncomeStartAt: "$createdAt", creditedIntervals: 0 } }]
   );
 
-  const intervalMs = startupPlan.intervalHours * 3600_000;
+  // Snapshot the *current* global rate/interval onto any position that
+  // doesn't have its own yet (pre-existing docs from before this field
+  // existed). From here on every position reads its own incomeRatePct/
+  // intervalHours below instead of the live settings — so an admin editing
+  // startupPlan in /admin/settings only changes the terms for investments
+  // made *after* the edit, and never retroactively changes (up or down) the
+  // per-interval payout of a position that's already accruing. Without
+  // this snapshot, every still-active investment silently starts paying a
+  // different amount the moment the global rate changes, even though
+  // nothing about that specific investment changed.
+  await db.collection("investments").updateMany(
+    { status: "Active", incomeRatePct: { $exists: false } },
+    { $set: { incomeRatePct: startupPlan.ratePct, intervalHours: startupPlan.intervalHours } }
+  );
+
   const now = Date.now();
 
   const investments = await db
@@ -390,13 +404,20 @@ export async function runInvestmentIncomeAccrual(): Promise<void> {
     .toArray();
 
   for (const investment of investments) {
+    // Per-position rate/interval locked in at creation (or backfilled
+    // above) — NOT the live startupPlan. This is what keeps the payout
+    // fixed across intervals for a given investment.
+    const ratePct = (investment.incomeRatePct as number | undefined) ?? startupPlan.ratePct;
+    const intervalHours = (investment.intervalHours as number | undefined) ?? startupPlan.intervalHours;
+    const intervalMs = intervalHours * 3600_000;
+
     const startAt = new Date(investment.investmentIncomeStartAt).getTime();
     const creditedIntervals = (investment.creditedIntervals as number | undefined) ?? 0;
     const totalDueIntervals = Math.floor((now - startAt) / intervalMs);
     const newIntervals = totalDueIntervals - creditedIntervals;
     if (newIntervals < 1) continue;
 
-    const income = round2((investment.amount as number) * (startupPlan.ratePct / 100) * newIntervals);
+    const income = round2((investment.amount as number) * (ratePct / 100) * newIntervals);
     const dueAt = new Date(startAt + totalDueIntervals * intervalMs);
     const dateKey = dueAt.toISOString();
 
@@ -406,7 +427,7 @@ export async function runInvestmentIncomeAccrual(): Promise<void> {
         positionId: investment._id,
         positionType: "investment",
         principal: investment.amount,
-        rate: startupPlan.ratePct / 100,
+        rate: ratePct / 100,
         income,
         intervalsCredited: newIntervals,
         date: dateKey,

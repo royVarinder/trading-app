@@ -68,10 +68,14 @@ export async function POST(req: Request) {
     status: "Active" as const,
     createdAt,
     // Anchors investment income accrual (src/lib/accrual.ts#runInvestmentIncomeAccrual)
-    // — starts earning immediately at the platform's current rate/interval,
-    // not a rate locked in at creation time.
+    // — starts earning immediately.
     investmentIncomeStartAt: createdAt,
     creditedIntervals: 0,
+    // Locked in at creation time so a later admin edit to startupPlan in
+    // /admin/settings only applies to *new* investments — it must never
+    // change the per-interval payout of a position that's already accruing.
+    incomeRatePct: startupPlan.ratePct,
+    intervalHours: startupPlan.intervalHours,
   };
   const result = await db.collection("investments").insertOne(doc);
 
