@@ -30,12 +30,12 @@ export type LeadershipRank = {
   level: number;
   rank: string;
   commissionPct: number;
-  selfInvestment: number; // member's own investment (staking excluded)
-  // Member's single best-performing direct referral's own investment
-  // (staking excluded, no downline/subtree involved) must reach this.
+  selfInvestment: number; // member's own investment + staking combined
+  // Member's single best-performing direct referral's own investment +
+  // staking combined (no downline/subtree involved) must reach this.
   directBusiness: number;
-  // The SUM of ALL the member's direct referrals' own investment (staking
-  // excluded) must reach this — includes the "best" one above, so the
+  // The SUM of ALL the member's direct referrals' own investment + staking
+  // combined must reach this — includes the "best" one above, so the
   // remaining direct referrals together must cover the rest. No minimum
   // referral count. See src/lib/team.ts#getBusinessTotals.
   teamBusiness: number;
@@ -59,7 +59,7 @@ export const LEADERSHIP_RANKS: LeadershipRank[] = [
 export type LegStats = {
   memberId: string;
   selfInvested: boolean; // this leg has made at least one investment of their own
-  teamInvestment: number; // sum of what THIS LEG'S OWN downline invested (staking excluded) — excludes the leg's own investment above, that's tracked separately
+  teamInvestment: number; // sum of what THIS LEG'S OWN downline invested + staked — excludes the leg's own investment above, that's tracked separately
 };
 
 // A leg qualifies for `rank` when it has invested itself AND its own
