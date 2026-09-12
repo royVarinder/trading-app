@@ -27,8 +27,8 @@ export async function GET() {
       directBusiness: r.directBusiness,
       teamBusiness: r.teamBusiness,
       // Whether at least one direct referral already qualifies as this
-      // rank's "leg" (invested themselves + their own downline reaches
-      // directBusiness above) — see src/lib/plans.ts#isQualifiedLeg.
+      // rank's "leg" (their own investment+staking reaches directBusiness
+      // above) — see src/lib/plans.ts#isQualifiedLeg.
       hasQualifiedLeg: totals.legs.some((leg) => isQualifiedLeg(leg, r)),
       monthlyReward: r.monthlyReward,
       status: r.level <= currentLevel ? "Achieved" : "Pending",

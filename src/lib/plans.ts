@@ -58,16 +58,15 @@ export const LEADERSHIP_RANKS: LeadershipRank[] = [
 // entry per direct referral. See src/lib/team.ts#getBusinessTotals.
 export type LegStats = {
   memberId: string;
-  selfInvested: boolean; // this leg has made at least one investment of their own
-  teamInvestment: number; // sum of what THIS LEG'S OWN downline invested + staked — excludes the leg's own investment above, that's tracked separately
+  invested: number; // this leg's own investment + staking combined
 };
 
-// A leg qualifies for `rank` when it has invested itself AND its own
-// downline has collectively invested at least the rank's directBusiness
-// figure — no separate referral-count minimum, no per-rank "how many legs"
-// setting. Only one qualifying leg is ever required (see rankForTotals).
+// A leg qualifies for `rank` when its own investment+staking reaches the
+// rank's directBusiness figure — no separate referral-count minimum, no
+// per-rank "how many legs" setting, and no requirement on that leg's own
+// downline. Only one qualifying leg is ever required (see rankForTotals).
 export function isQualifiedLeg(leg: LegStats, rank: LeadershipRank): boolean {
-  return leg.selfInvested && leg.teamInvestment >= rank.directBusiness;
+  return leg.invested >= rank.directBusiness;
 }
 
 export function rankForTotals(
